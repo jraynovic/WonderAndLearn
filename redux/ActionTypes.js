@@ -1,0 +1,22 @@
+export const ADD_USERS = 'ADD_USERS';
+export const ADD_USER = 'ADD_USER'
+export const SET_PARENT = 'SET_PARENT'
+export const SET_PARENT_FAILED = 'SET_PARENT_FAILED'
+export const SIGN_UP_LOADING = 'SIGN_UP_LOADING'
+export const USERS_LOADING = 'USERS_LOADING';
+
+export const ADD_QUESTIONS = 'ADD_QUESTIONS';
+export const ADD_QUESTION = 'ADD_QUESTION';
+export const QUESTIONS_LOADING = 'QUESTION_LOADING';
+export const QUESTIONS_FAILED = 'QUESTION_FAILED';
+
+export const ADD_CATEGORIES = 'ADD_CATEGORIES';
+export const ADD_CATEGORY = 'ADD_CATEGORY'
+export const POST_CATEGORIES = 'POST_CATEGORIES';
+
+export const SIGN_UP = 'SIGN_UP'
+export const SIGN_UP_FAILED = 'SIGN_UP_FAILED'
+
+export const LOG_IN = 'LOG_IN'
+export const LOG_IN_LOADING = 'LOG_IN_LOADING'
+export const LOG_IN_FAILED = 'LOG_IN_FAILED'
