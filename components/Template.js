@@ -1,15 +1,15 @@
 import React, { Component } from 'react'
-import {TouchableOpacity,Text,TextInput,View, StyleSheet, Image, ScrollView, SafeAreaView, FlatList, ActivityIndicator, Alert} from 'react-native';
-import { signUp, logIn } from '../redux/ActionCreators';
+import {TouchableOpacity,Text,TextInput,View, StyleSheet, KeyboardAvoidingView, ScrollView, SafeAreaView, FlatList, ActivityIndicator, Alert} from 'react-native';
+import { signUp, logIn,logInFailed } from '../redux/ActionCreators';
 import {connect} from 'react-redux'
 import * as Font from 'expo-font';
-import Learning from '../assets/Learning.png'
-
+import { checkForUpdateAsync } from 'expo/build/Updates/Updates';
 
 
 const mapDispatchToProps = {
     signUp:(user)=> signUp(user),
-    logIn:(user)=>logIn(user)
+    logIn:(user)=>logIn(user),
+    logInFailed:(err)=>logInFailed(err)
 }
 
 const mapStateToProps = state =>{
@@ -19,7 +19,7 @@ const mapStateToProps = state =>{
     
 }
 
-class WelcomeComponent extends Component {
+class LogInComponent extends Component {
     constructor(props) {
         super(props)
         this.state={
@@ -44,8 +44,8 @@ class WelcomeComponent extends Component {
     render() {
         if(!this.state.fontsLoaded){
             return(
-                <View style={styles.main}>
-                    <Text style={styles.title}>Loading</Text>
+                <View>
+                    <Text>Loading</Text>
                 </View>
             )
         }
@@ -60,29 +60,11 @@ class WelcomeComponent extends Component {
         return (
             <View style={styles.main}>
                 
-                <Text style={styles.title}>WONDER + LEARN</Text>
-                
-                <View>
-                    <Image source={Learning} style={styles.image}/>
-                </View>
-                <View>
-                    <TouchableOpacity
-                        style={styles.logInButton}
-                        onPress={() => navigate('SignUp')}
-                    >
-                        <Text style={styles.logInButtonText}>{'     '}SIGN UP{'     '}</Text>
-                    </TouchableOpacity>
-                </View>
-                <View>
-                    <TouchableOpacity
-                        style={styles.logInButton}
-                        onPress={() => navigate('LogIn')}
-                    >
-                        <Text style={styles.logInButtonText}>{'     '}LOG IN{'     '}</Text>
-                    </TouchableOpacity>
-                </View>
+                <Text style={styles.title}>TEMPLATE</Text>
+               
             </View>
         )
+
     }
 }
 
@@ -94,10 +76,10 @@ const styles = StyleSheet.create({
         justifyContent:'flex-start'
     },
     title:{
-        fontFamily: 'Dosis',color:'#ed553b', marginTop:'20%',marginBottom:20,fontSize:40  
-    },image:{
-        height:310,
-        width:270
+        fontFamily: 'Dosis',color:'#ed553b', marginTop:'40%',marginBottom:60,fontSize:40  
+    },
+    errMess:{
+        fontFamily: 'Dosis',color:'#ed553b', marginTop:10,fontSize:24
     },
     fieldBackground:{
         width:'60%',
@@ -142,4 +124,4 @@ const styles = StyleSheet.create({
         marginLeft:8
     }
 })
-export default connect(mapStateToProps,mapDispatchToProps)(WelcomeComponent)
+export default connect(mapStateToProps,mapDispatchToProps)(LogInComponent)

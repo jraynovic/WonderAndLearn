@@ -1,24 +1,30 @@
 import React, { Component } from 'react'
 import {TouchableOpacity,Text,TextInput,View, StyleSheet,Image, KeyboardAvoidingView, ScrollView, SafeAreaView, Keyboard, ActivityIndicator,Modal} from 'react-native';
-import { signUp, logIn } from '../redux/ActionCreators';
+import { signUp, logIn, setSelectedKid } from '../redux/ActionCreators';
 import {connect} from 'react-redux'
 import * as Font from 'expo-font';
-import { checkForUpdateAsync } from 'expo/build/Updates/Updates';
 import { Input } from 'react-native-elements';
 import newUser from '../assets/NewUser.png'
+import rainbow from '../assets/rainbowHills.png'
+import cat from '../assets/Cat.png'
+import dinosaur from '../assets/Dinosaur.png'
+import dog from '../assets/Dog.png'
 
 
 const mapDispatchToProps = {
     signUp:(user)=> signUp(user),
-    logIn:(user)=>logIn(user)
+    logIn:(user)=>logIn(user),
+    setSelectedKid:(kid)=>setSelectedKid(kid)
 }
 
 const mapStateToProps = state =>{
     return({
-     users: state.users
+     user: state.user
     })
     
 }
+
+
 
 class ProfileComponent extends Component {
     constructor(props) {
@@ -53,12 +59,64 @@ class ProfileComponent extends Component {
       }
     verifyPin = ()=>{
         const enteredPin = this.state.one+this.state.two+this.state.three+this.state.four
-        if(parseInt(enteredPin)=== this.props.users.parent.pin){
+        if(parseInt(enteredPin)=== this.props.user.pin){
             this.setModalVisible(!this.state.modalVisible)
             this.props.navigation.navigate('ParentDashboard')
         }else{
             console.log('WRONG PIN!')
             this.setState({pinError:'INCORRECT PIN'})
+        }
+    }
+    RenderImage = (image) =>{
+        if(image === '../assets/rainbowHills.png' ){
+            return(
+                <Image style={styles.image} source = {rainbow}/>
+            )
+        } else if(image === '../assets/Cat.png'){
+            return (
+                <Image style={styles.image} source = {cat}/>
+            )
+        } else if( image === '../assets/Dinosaur.png'){
+            return(
+                <Image style={styles.image} source={dinosaur}/>
+            )
+        }else if( image === '../assets/Dog.png'){
+            return(
+                <Image style={styles.image} source={dog}/>
+            )
+        }
+
+    }
+
+    handleNav =(kid)=>{
+        this.props.setSelectedKid(kid)
+        this.props.navigation.navigate('KidsHome')
+    }
+    
+    RenderKids = () =>{
+        if (this.props.user.kids) {
+            return(
+                <ScrollView horizontal>
+                    {this.props.user.kids.map(kid=>{
+                        return (
+                            <TouchableOpacity key ={kid._id} style={styles.kidsProfile} onPress={()=>this.handleNav(kid)}>
+                                <View style={styles.centered}>
+                                    {this.RenderImage(kid.image)}
+                                    <Text style={styles.kidText}>{kid.name}</Text>
+                                </View>
+                            </TouchableOpacity>
+                        )
+                    })}
+                   
+                </ScrollView>
+            )
+        } else {
+            return (
+                <TouchableOpacity onPress={() => this.setModalVisible(!this.state.modalVisible)}>
+                    <Image source={newUser} style={styles.image} />
+                </TouchableOpacity>
+            )
+         
         }
     }
 
@@ -79,14 +137,15 @@ class ProfileComponent extends Component {
                     <Text>TEST</Text>
                 </TouchableOpacity> */}
                 <View style={styles.profiles}>
-                    {this.props.users.parent.kids ?
+                    {this.RenderKids()}
+                    {/* {this.props.users.parent.kids[0].name ?
                         <TouchableOpacity onPress={() => this.setModalVisible(!this.state.modalVisible)}>
                             <Image source={newUser} style={styles.image} />
-                        </TouchableOpacity> : <View> </View>
+                        </TouchableOpacity> : <View>{this.props.users.parent.kids[0].name} </View>
 
-                    }
+                    } */}
                 </View>
-
+                
                 <View style={styles.centered}>
                     <TouchableOpacity style={styles.forParentsButton} onPress={() => this.setModalVisible(!this.state.modalVisible)}>
                         <Text onPress={() => this.setModalVisible(!this.state.modalVisible)} style={styles.forParentsButtonText}>FOR PARENTS</Text>
@@ -101,7 +160,7 @@ class ProfileComponent extends Component {
                     }}
                 >
                     <View style={styles.modalView}>
-                        <Text onPress={() => this.setModalVisible(!this.state.modalVisible)}>x</Text>
+                        <Text style={styles.modalX} onPress={() => this.setModalVisible(!this.state.modalVisible)}>x</Text>
                         <Text style={styles.modalTitle}>ENTER PIN TO CONTINUE </Text>
                         <View style={styles.pinContainer}>
                             <View style={styles.pinBox}>
@@ -184,6 +243,12 @@ const styles = StyleSheet.create({
     title:{
         fontFamily: 'Dosis',color:'#ed553b', marginTop:'20%',marginBottom:60,fontSize:40  
     },
+    kidText:{
+        fontFamily: 'Dosis',color:'#ed553b', marginTop:10,fontSize:24  
+    },
+    kidsProfile:{
+        marginHorizontal:10
+    },
     fieldBackground:{
         width:'60%',
         marginTop:15,
@@ -257,6 +322,11 @@ const styles = StyleSheet.create({
         fontSize:16,
         marginTop:200,
         marginLeft:8
+    },
+    modalX:{
+        fontSize:40,
+        alignSelf:'flex-end',
+        marginBottom:10
     },
     modalView: {
         margin: 30,

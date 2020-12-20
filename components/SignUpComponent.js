@@ -3,7 +3,6 @@ import {TouchableOpacity,Text,TextInput,View, StyleSheet, KeyboardAvoidingView, 
 import { signUp, logIn } from '../redux/ActionCreators';
 import {connect} from 'react-redux'
 import * as Font from 'expo-font';
-import { checkForUpdateAsync } from 'expo/build/Updates/Updates';
 
 
 const mapDispatchToProps = {
@@ -13,7 +12,7 @@ const mapDispatchToProps = {
 
 const mapStateToProps = state =>{
     return({
-        users: state.users,
+        user: state.user,
         parent: state.parent
     })
     
@@ -26,18 +25,22 @@ class SignUpComponent extends Component {
         this.state ={
             username:"",
             email: "",
+            emailValidation:'',
             firstname:"",
+            firstnameValidation:'',
             lastname:"",
+            lastnameValidation:'',
             pin:"",
+            pinValidation:'',
             password: "",
             confirmedPassword:"",
-            validateError:[],
+            passwordValidation:'',
+            valdationError:true,
             fontsLoaded: false,
         }
     }
     customFonts = {
         Dosis: require('../assets/fonts/Dosis-Bold.ttf'),
-        //'Inter-Black': require('./assets/fonts/Inter-Black.otf'),
     }
 
     async _loadFontsAsync() {
@@ -58,71 +61,87 @@ class SignUpComponent extends Component {
         
         
     }
-    validateUser =() =>{
-        const validateEmail= (email) =>{
-            const re = /\S+@\S+\.\S+/;
-            return re.test(email);
-        }
-        if(!validateEmail(this.state.email)){
-            this.setState({
-                validateError: this.state.validateError.push('**Email is invalid\n')
-            })
-        }
-        const reChar = /[a-zA-Z]/g
-        if(reChar.test(this.state.pin)){
-            this.setState({
-                validateError: this.state.validateError.push( {name:'pinVal',text:'**Pin must only contain numbers\n'})
-            })
-        }
-        if(this.state.pin.length !==4){
-            this.setState({
-                validateError: this.state.validateError.push({name:'pinLength',text:'**Pin must be 4 numbers\n'})
-            })
-        }
-        if(this.state.firstname.length < 3 || this.state.firstname > 15){
-            this.setState({
-                validateError: this.state.validateError.push({name:'firstName',text:'**First Name must be\n between 3 and 15 characters.\n'})
-            })
-        }
-        if(this.state.lastname.length < 3 || this.state.lastname > 15){
-            this.setState({
-                validateError: this.state.validateError.push({name:'lastName',text:'**Last Name must be\n between 3 and 15 characters.\n'})
-            })
-        }
-        if(this.state.password.length <4){
-            this.setState({
-                validateError: this.state.validateError.push({name:'passLength',text:'**Password should be\n longer than 4 characters.\n'})
-            })
-        }
-        if(this.state.password !== this.state.confirmedPassword){
-            this.setState({
-                validateError: this.state.validateError.push({name:'password',text:'**Passwords do not match.\n'})
-            })
-        }
+    
+    submitNewUser = () => {
+        if (this.state.valdationError) {
+            alert('ERROR PRESENT')
+        } else {
+            alert('NO ERROR PRESENT')
 
-        this.state.validateError.map(err=> console.log(err))
-        if(this.state.validateError.length ===0){
-            console.log(this.state.validateError.length)
+            // this.setState({ username: this.state.email })
+            // const newUser = {
+            //     username: this.state.email,
+            //     email: this.state.email,
+            //     password: this.state.password,
+            //     firstname: this.state.firstname,
+            //     lastname: this.state.lastname,
+            //     pin: this.state.pin,
+            // }
+            // this.props.signUp(JSON.stringify(newUser))
+            //     .then(this.props.navigation.navigate('Profile'))
         }
-
-    }
-    submitNewUser = ()=>{
-        //check passwords and validate before moving on! ****************************************************************************************
-        this.setState({username:this.state.email})
-        const newUser = {
-            username: this.state.email,
-            email:this.state.email,
-            password: this.state.password,
-            firstname: this.state.firstname,
-            lastname: this.state.lastname,
-            pin: this.state.pin
-        }
-    //    alert(JSON.stringify(this.props.users.errMess))
-       this.props.signUp(JSON.stringify(newUser))
-       .then(this.props.navigation.navigate('Profile'))
     }
 
-        
+    validateInput = (input) => {
+        const emailValidator = email => {
+            const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            return re.test(String(email).toLowerCase())
+        }
+
+        const pinValidator = pin => {
+            const re = /^\d{4}$/
+            return re.test(pin)
+        }
+
+        if (input === 'firstname') {
+            if (this.state.firstname.length < 3 || this.state.firstname.length > 10) {
+                this.setState({ firstnameValidation: '*FIRST NAME MUST BE BETWEEN\n 3 AND 10 CHARACTERS' })
+            } else {
+                this.setState({ firstnameValidation: '' })
+            }
+        }
+
+        if(input === 'lastname'){
+            if(this.state.lastname.length <3 || this.state.lastname.length >12 ){
+                this.setState({lastnameValidation:'*LAST NAME MUST BE BETWEEN\n 3 AND 12 CHARACTERS'})
+            }else{
+                this.setState({lastnameValidation:''})
+            }
+        }
+        if(input === 'email'){
+            if(emailValidator(this.state.email)){
+                this.setState({emailValidation:''})
+            }else{
+                this.setState({emailValidation:'*PLEASE ENTER VALID EMAIL'})
+            }
+        }
+        if(input === 'pin'){
+            if(pinValidator(this.state.pin)){
+                this.setState({pinValidation:''})
+            }else{
+                this.setState({pinValidation:'*PIN MUST BE 4 DIGITS'})
+            }
+        }
+        if(input === 'password'){
+            if(this.state.password === this.state.confirmedPassword){
+                this.setState({passwordValidation:''})
+            }else{
+                this.setState({passwordValidation:'*PASSWORDS MUST MATCH'})
+            }
+        }
+        if(
+            this.state.firstnameValidation || this.state.firstname.length <1 || 
+            this.state.lastnameValidation || this.state.lastname.length <1 || 
+            this.state.emailValidation || this.state.email.length <1 || 
+            this.state.pinValidation || this.state.pin.length <1 ||
+             this.state.passwordValidation || this.state.confirmedPassword.length <1
+          ){
+            this.setState({valdationError:true})
+        }else{
+            this.setState({valdationError:false})
+        }
+        // alert(this.state.valdationError)
+    }
 
     render() {
         if(!this.state.fontsLoaded){
@@ -145,41 +164,53 @@ class SignUpComponent extends Component {
                 <Text>{JSON.stringify(this.props.parent)}</Text>
                 <View>
                     
-                        <View style={styles.fieldBackground}>
+                        <View style={this.state.firstnameValidation? styles.fieldBackgroundError:styles.fieldBackground}>
                             
                             <TextInput
                                 placeholder='FIRST NAME'
                                 placeholderTextColor= '#ed553b'
-                                style={styles.fields}
+                                 style = {styles.fields}
                                 onChangeText = {(e)=>this.setState({firstname:e})} 
+                                onBlur={()=>this.validateInput('firstname')}
                             />
                         </View>
-                        
-                        <View style={styles.fieldBackground}>
+
+                        {this.state.firstnameValidation ?<View style={styles.errorView}><Text style={styles.errorText}>{this.state.firstnameValidation}</Text></View>:null}
+
+                        <View style={this.state.lastnameValidation? styles.fieldBackgroundError:styles.fieldBackground}>
                             <TextInput
-                                type='email'
+                                
                                 placeholder='LAST NAME'
                                 placeholderTextColor= '#ed553b'
                                 style={styles.fields}
                                 onChangeText = {(e)=>this.setState({lastname:e})} 
+                                onBlur={()=>this.validateInput('lastname')}
                             />
                         </View>
-                        <View style= {styles.fieldBackground}>
+                        {this.state.lastnameValidation ?<View style={styles.errorView}><Text style={styles.errorText}>{this.state.lastnameValidation}</Text></View>:null}
+
+                        <View style={this.state.emailValidation? styles.fieldBackgroundError:styles.fieldBackground}>
                             <TextInput
                                 placeholder='EMAIL'
                                 placeholderTextColor= '#ed553b'
                                 style={styles.fields}
                                 onChangeText={(e) => this.setState({ email: e })}
+                                onBlur={()=>this.validateInput('email')}
                             />
                         </View>
-                        <View style= {styles.fieldBackground}>
+                        {this.state.emailValidation ?<View style={styles.errorView}><Text style={styles.errorText}>{this.state.emailValidation}</Text></View>:null}
+
+                        <View style={this.state.pinValidation? styles.fieldBackgroundError:styles.fieldBackground}>
                             <TextInput
                                 placeholder='4 DIGIT PIN'
                                 placeholderTextColor= '#ed553b'
                                 style={styles.fields}
                                 onChangeText={(e) => this.setState({ pin: e })}
+                                onBlur={()=>this.validateInput('pin')}
                             />
                         </View>
+                        {this.state.pinValidation ?<View style={styles.errorView}><Text style={styles.errorText}>{this.state.pinValidation}</Text></View>:null}
+
                         <View style= {styles.fieldBackground}>
                             <TextInput
                                 secureTextEntry
@@ -189,17 +220,20 @@ class SignUpComponent extends Component {
                                 onChangeText={(e) => this.setState({ password: e })}
                             />
                         </View>
-                        <View style= {styles.fieldBackground}>
+
+                        <View style={this.state.passwordValidation? styles.fieldBackgroundError:styles.fieldBackground}>
                             <TextInput
                                 secureTextEntry
                                 placeholder='CONFIRM PASSWORD'
                                 placeholderTextColor= '#ed553b'
                                 style={styles.fields}
                                 onChangeText={(e) => this.setState({ confirmedPassword: e })}
+                                onBlur={()=>this.validateInput('password')}
                             />
                         </View>
+                        {this.state.passwordValidation ?<View style={styles.errorView}><Text style={styles.errorText}>{this.state.passwordValidation}</Text></View>:null}
 
-                        {this.props.users.loading ?  <View style={{marginTop:10}}><ActivityIndicator size="large" color="#ed553b"/></View>  
+                        {this.props.user.loading ?  <View style={{marginTop:10}}><ActivityIndicator size="large" color="#ed553b"/></View>  
                          : <TouchableOpacity
                             style={styles.createButton}
                             onPress={() => this.submitNewUser()}
@@ -209,7 +243,7 @@ class SignUpComponent extends Component {
                         }
 
                         <View>
-                            <Text style={styles.validate}>{this.props.users.errMess ? '*VERIFY FIELDS ARE CORRECTLY FILLED':''}</Text>   
+                            <Text style={styles.validate}>{this.props.user.errMess ? '*VERIFY FIELDS ARE CORRECTLY FILLED':''}</Text>   
                         </View>
                     <TouchableOpacity onPress={()=>navigate('LogIn')} >
 
@@ -245,6 +279,15 @@ const styles = StyleSheet.create({
         borderRadius:50,
         color:'red'
     },
+    fieldBackgroundError:{
+        marginTop:15,
+        backgroundColor:'rgba(255, 255, 255, 0.51)',
+        opacity:1,
+        borderWidth:1,
+        borderColor:'#ed553b',
+        borderRadius:50,
+        color:'red'
+    },
     fields:{
         padding:5,
         opacity:1,
@@ -269,11 +312,15 @@ const styles = StyleSheet.create({
         color:'#fff', 
         fontSize:16,
     },
-    validate:{
-        marginTop:15,
+    errorText:{
+        // marginTop:15,
         fontFamily: 'Dosis',
         color:'#ed553b', 
-        fontSize:12,
+        fontSize:10,
+    },
+    errorView:{
+        alignSelf:'center',
+        textAlign:'center'
     },
     footer:{
         fontFamily: 'Dosis',

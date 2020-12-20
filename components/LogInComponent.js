@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import {TouchableOpacity,Text,TextInput,View, StyleSheet, KeyboardAvoidingView, ScrollView, SafeAreaView, FlatList, ActivityIndicator, Alert} from 'react-native';
+import { TouchableOpacity,Text,TextInput,View, StyleSheet, ActivityIndicator, Switch } from 'react-native';
 import { signUp, logIn,logInFailed } from '../redux/ActionCreators';
 import {connect} from 'react-redux'
+import * as SecureStore from 'expo-secure-store';
 import * as Font from 'expo-font';
-import { checkForUpdateAsync } from 'expo/build/Updates/Updates';
+
 
 
 const mapDispatchToProps = {
@@ -13,10 +14,7 @@ const mapDispatchToProps = {
 }
 
 const mapStateToProps = state =>{
-    return({
-        users: state.users
-    })
-    
+    return({user: state.user})
 }
 
 class LogInComponent extends Component {
@@ -26,13 +24,13 @@ class LogInComponent extends Component {
             email:'',
             password: '',
             fontsLoaded: false,
-            loading: false
+            loading: false,
+            remember:false
         }
     }
 
     customFonts = {
         Dosis: require('../assets/fonts/Dosis-Bold.ttf'),
-        //'Inter-Black': require('./assets/fonts/Inter-Black.otf'),
     }
 
     async _loadFontsAsync() {
@@ -42,23 +40,43 @@ class LogInComponent extends Component {
 
     componentDidMount(){
         this._loadFontsAsync()
-        
-        // this._loadFontsAsync()
+        SecureStore.getItemAsync('userinfo')
+            .then(userdata => {
+                const userinfo = JSON.parse(userdata);
+                if (userinfo) {
+                    this.setState({email: userinfo.email});
+                    this.setState({password: userinfo.password});
+                    this.setState({remember: true})
+                }
+            });
     }
     
     logIn = ()=>{
+        if (this.state.remember) {
+            SecureStore.setItemAsync(
+                'userinfo',
+                JSON.stringify({
+                    email: this.state.email,
+                    password: this.state.password
+                })
+            ).catch(error => console.log('Could not save user info', error));
+        } else {
+            SecureStore.deleteItemAsync('userinfo').catch(
+                error => console.log('Could not delete user info', error)
+            );
+        }
+
         const user = {
-            username:this.state.email,
+        username:this.state.email,
             password:this.state.password,
             email:this.state.email
         }
         this.props.logIn(JSON.stringify(user))
         .then(()=>{
-            if(this.props.users.parent.token){
+            if(this.props.user.token){
             this.props.navigation.navigate('Profile')
             } else {
                 this.props.logInFailed('SIGN IN FAILED')
-                alert('Sign in failed')
             }
         })
     }
@@ -72,7 +90,7 @@ class LogInComponent extends Component {
             )
         }
         const { navigate } = this.props.navigation;
-        if(this.props.users.loading){
+        if(this.props.user.loading){
             return (
                 <View style={styles.main}>
                     <ActivityIndicator size="large" color="#ed553b"/>
@@ -88,6 +106,7 @@ class LogInComponent extends Component {
                         placeholder='EMAIL'
                         placeholderTextColor= '#ed553b'
                         style={styles.fields}
+                        value={this.state.email}
                         onChangeText={(e) => this.setState({ email: e })}
                     />
                 </View>
@@ -97,7 +116,17 @@ class LogInComponent extends Component {
                         placeholder='PASSWORD'
                         placeholderTextColor= '#ed553b'
                         style={styles.fields}
+                        value={this.state.password}
                         onChangeText={(e) => this.setState({ password: e })}
+                    />
+                </View>
+                <View style={styles.rememberRow}>
+                    <Text style={styles.rememberText}>Stay logged in?</Text>
+                    <Switch
+                        trackColor={{ false: "#fff", true: "#fff" }}
+                        thumbColor={ this.state.remember? 	'#228B22': '#ed553b'}
+                        value= {this.state.remember}
+                        onValueChange= {()=>this.setState({remember:!this.state.remember})}
                     />
                 </View>
                 <View>
@@ -108,6 +137,7 @@ class LogInComponent extends Component {
                         <Text style={styles.logInButtonText}>{'     '}LOG IN{'     '}</Text>
                     </TouchableOpacity>
                 </View>
+                {this.props.user.errMess ? <View><Text style={styles.errMess}>Login Failed</Text></View>  : <View></View>} 
                 <View>
                     <TouchableOpacity
                     onPress={()=>navigate('SignUp')}
@@ -130,6 +160,9 @@ const styles = StyleSheet.create({
     },
     title:{
         fontFamily: 'Dosis',color:'#ed553b', marginTop:'40%',marginBottom:60,fontSize:40  
+    },
+    errMess:{
+        fontFamily: 'Dosis',color:'#ed553b', marginTop:10,fontSize:24
     },
     fieldBackground:{
         width:'60%',
@@ -165,6 +198,18 @@ const styles = StyleSheet.create({
         fontFamily: 'Dosis',
         color:'#fff', 
         fontSize:16,
+    },
+    rememberRow:{
+        flexDirection:'row',
+        marginTop:10,
+        alignItems:'center',
+        justifyContent:'flex-end'
+    },  
+    rememberText:{
+        fontFamily: 'Dosis',
+        color:'#ed553b', 
+        fontSize:16,
+        marginRight:5
     },
     footer:{
         fontFamily: 'Dosis',

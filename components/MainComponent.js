@@ -1,32 +1,21 @@
 import React, { Component } from 'react';
 import {Text,View} from 'react-native';
 import {createStackNavigator} from 'react-navigation';
-import HomeComponent from './HomeComponent';
-import ParentComponent from './ParentComponent';
-import KidComponent from './KidComponent';
-import FinishedComponent from './kid/FinishedComponent';
-import TemplateComponent from './TemplateComponent'
-import ChallengeComponent from './ChallengeComponent';
-import ChooseUser from './ChooseUser'
-import ChallengeList from './ChallengeList';
-import BuildChallenges from './BuildChallenges';
-import QuestionsAvailable from './buildcomponents/QuestionsAvailable';
-import AddChild from './AddChildComponent'
-import StatsComponent from './StatsComponent'
 import SignUpComponent from './SignUpComponent'
 import LogInComponent from './LogInComponent'
 import ProfileComponent from './ProfileComponent'
 import WelcomeComponent from './WelcomeComponent'
 import ParentDashboardComponent from './ParentDashboardComponent'
+import ParentQuestionComponent from './ParentQuestionComponent'
+import ParentBuildQuestionComponent from './ParentBuildQuestionComponent'
+import ParentEditQuestionComponent from './ParentEditQuestionComponent'
+import KidsChallengeComponent from './KidsChallengeComponent'
+import ChallengeComponent from './ChallengeComponent' //used
+import QuestionComponent from './QuestionsComponent'
 import { connect } from 'react-redux';
 import {fetchQuestions, fetchCategories, postCategory,postNewCategory, fetchQuestionsByCategory, fetchUsers, signUp} from '../redux/ActionCreators';
-// import PreviewComponent from './PreviewComponent'
+import KidsHomePageComponent from './KidsHomePageComponent';
 
-// const RenderHome = () =>{
-//     return(
-//         <HomeComponent/>    
-//     )
-// }
 const mapDispatchToProps={
     fetchQuestions,
     fetchCategories,
@@ -43,25 +32,21 @@ const HomeNavigator = createStackNavigator(
     {
         Home:{
             screen: WelcomeComponent,
+            
         },
-        Parent:{screen:ParentComponent},
-        Kid:{screen:KidComponent},
-        Templates:{screen:TemplateComponent},
-        Challenge:{screen:ChallengeComponent},
-        ChooseUser:{screen:ChooseUser},
-        ChallengeList:{screen:ChallengeList},
-        BuildChallenges:{screen:BuildChallenges},
-        QuestionsAvailable:{screen:QuestionsAvailable},
-        FinishedComponent:{screen:FinishedComponent},
-        AddChild:{screen:AddChild},
-        Stats:{screen:StatsComponent},
         SignUp:{screen:SignUpComponent},
         LogIn:{screen:LogInComponent},
         Profile:{screen: ProfileComponent},
         Welcome: {screen:WelcomeComponent},
-        ParentDashboard:{screen: ParentDashboardComponent}
+        ParentDashboard:{screen: ParentDashboardComponent},
+        ParentQuestion:{screen:ParentQuestionComponent},
+        ParentBuildQuestion:{screen:ParentBuildQuestionComponent},
+        ParentEditQuestion :{screen:ParentEditQuestionComponent},
+        KidsHome:{screen:KidsHomePageComponent},
+        KidsChallenge:{screen:KidsChallengeComponent},
+        Challenge:{screen:ChallengeComponent},
+        Questions:{screen:QuestionComponent}
 
-        // Preview: { screen:PreviewComponent }
     },
     {
         initialRouteName: 'Home',
@@ -71,11 +56,7 @@ const HomeNavigator = createStackNavigator(
 
 class MainComponent extends Component {
     componentDidMount(){
-        this.props.fetchCategories()
-        this.props.fetchUsers()
-        // this.props.fetchQuestions()
-        
-        
+
     }
     render() {
         return (

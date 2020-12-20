@@ -107,7 +107,6 @@ export const postCategory = (id,category) => (dispatch) => {
     .then(response => response.json())
     .then(response => dispatch(addCategory(response)))
     .catch(error => {
-        // console.log('post category', error.message);
         alert('Your category could not be posted\nError: ' + error.message);
     });
 };
@@ -141,7 +140,6 @@ export const postQuestion = (category,question) => (dispatch) => {
     .then(response => response.json())
     // .then(response => dispatch(addQuestion(response,category)))
     .catch(error => {
-        console.log('post question', error.message);
         alert('Your question could not be posted\nError: ' + error.message);
     });
 };
@@ -170,7 +168,6 @@ export const postNewCategory = (category) => (dispatch) => {
     .then(response => response.json())
     // .then(response => dispatch(addQuestion(response,category)))
     .catch(error => {
-        console.log('post question', error.message);
         alert('Your question could not be posted\nError: ' + error.message);
     });
 };
@@ -224,7 +221,6 @@ export const postUser = (id,user) => (dispatch) => {
     .then(response => response.json())
     .then(response => dispatch(addUser(response)))
     .catch(error => {
-        console.log('post user', error.message);
         alert('Your user could not be posted\nError: ' + error.message);
     });
 };
@@ -237,7 +233,6 @@ export const addUser = (user) => ({
 export const signUp = (newUser) => (dispatch) => {
 
     dispatch(signUpLoading())
-    console.log('******************',newUser)
     return fetch(baseUrl+'users/signup', {
         method: "POST",
         body: newUser,
@@ -252,8 +247,6 @@ export const signUp = (newUser) => (dispatch) => {
             } else {
                 const error = new Error(`Error ${response.status}: ${response.statusText}`);
                 error.response = response;
-                console.log('here*****************************************************')
-                console.log(JSON.stringify(error.response))
                 throw error;
             }
         },
@@ -263,11 +256,9 @@ export const signUp = (newUser) => (dispatch) => {
     )
     .then(response => response.json())
     .then(response => {
-        alert('We made it here!')
         dispatch(logIn(newUser))
     })
     .catch(error => {
-        // console.log(JSON.stringify(error.message));
         dispatch(signUpFailed(error.message))
     });
 };
@@ -285,8 +276,7 @@ export const logIn = (user) => (dispatch) => {
     
     dispatch(logInLoading())
     //axios.post(baseUrl + 'users/login',{username:user.username,password: user.password})
-    console.log('ATTEMPTING LOGIN****************************************************************************************')
-    console.log(user)
+ 
     return fetch(baseUrl + 'users/login', {
         method: "POST",
         body: user,
@@ -300,6 +290,7 @@ export const logIn = (user) => (dispatch) => {
                 
                 return response;
             } else {
+
                 const error = new Error(`Error ${response.status}: ${response.statusText}`);
                 error.response = response;
                 throw error;
@@ -309,13 +300,11 @@ export const logIn = (user) => (dispatch) => {
     )
     .then(response => response.json())
     .then(response => {
-        console.log('TOKEN**********************************************************',response.token)
         const user = response.user
         user.token =response.token
         dispatch(setParent(response.user))})
     .catch(error => {
         dispatch(logInFailed(error))
-        alert('Your user could not log in: ' + error.message);
     });
 };
 
@@ -332,3 +321,348 @@ export const logInFailed= (error)=>({
     type: ActionTypes.LOG_IN_FAILED,
     payload: error,
 })
+
+export const addNewKid = (user) => (dispatch) => {
+    
+    dispatch(logInLoading())
+    //axios.post(baseUrl + 'users/login',{username:user.username,password: user.password})
+
+    return fetch(baseUrl + `users/${user.id}/kids`, {
+        method: "POST",
+        body: JSON.stringify(user.kid) ,
+        headers: {
+            "Authorization":`Bearer ${user.token} `,
+            "Content-Type": "application/json",
+            
+        }
+    })
+    .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                const error = new Error(`Error ${response.status}: ${response.statusText}`);
+                error.response = response;
+                throw error;
+            }
+        },
+        error => { throw error; }
+    )
+    .then(response => response.json())
+    .then(response => {
+        dispatch(addKid(response))
+    })
+    .catch(error => {
+        // dispatch(addKidFailed(error))
+        alert('Failed'+error)
+    });
+};
+
+export const addKid = (user) => ({
+    type: ActionTypes.ADD_KID,
+    payload: user
+})
+export const addKidLoading= ()=>({
+    type: ActionTypes.ADD_KID_LOADING
+})
+export const addKidFailed= (error)=>({
+    type: ActionTypes.ADD_KID_FAILED,
+    payload: error,
+})
+
+export const deleteKid = (user,kidId) => (dispatch) => {
+    
+    // dispatch(logInLoading())
+    //axios.post(baseUrl + 'users/login',{username:user.username,password: user.password})
+
+    return fetch(baseUrl + `users/${user._id}/kids/${kidId}`, {
+        method: "DELETE",
+        // body: JSON.stringify(user.kid) ,
+        headers: {
+            "Authorization":`Bearer ${user.token} `,
+            "Content-Type": "application/json",
+            
+        }
+    })
+    .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                const error = new Error(`Error ${response.status}: ${response.statusText}`);
+                error.response = response;
+                throw error;
+            }
+        },
+        error => { throw error; }
+    )
+    .then(response => response.json())
+    .then(response => {
+        dispatch(removeKid(response))
+    })
+    .catch(error => {
+        // dispatch(addKidFailed(error))
+        alert('Failed'+error)
+    });
+};
+
+export const removeKid = (user) => ({
+    type: ActionTypes.REMOVE_KID,
+    payload: user
+})
+export const removeKidLoading= ()=>({
+    type: ActionTypes.REMOVE_KID_LOADING
+})
+export const removeKidFailed= (error)=>({
+    type: ActionTypes.REMOVE_KID_FAILED,
+    payload: error,
+})
+
+export const addNewChallenge = (user,kidId,category) => (dispatch) => {
+    
+    // dispatch(logInLoading())
+    //axios.post(baseUrl + 'users/login',{username:user.username,password: user.password})
+    return fetch(baseUrl + `users/${user._id}/kids/${kidId}`, {
+        method: "POST",
+        headers: {
+            "Authorization":`Bearer ${user.token} `,
+            "Content-Type": "application/json",
+            
+        },
+        body: JSON.stringify(category) ,
+    })
+    .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                const error = new Error(`Error ${response.status}: ${response.statusText}`);
+                error.response = response;
+                throw error;
+            }
+        },
+        error => { throw error; }
+    )
+    .then(response => response.json())
+    .then(response => {
+        console.log('############************************************SSSSSSSSSSSSSSHHHHHHHHHHHHHHHHHHHHHH',JSON.stringify(response))
+        response.token = user.token
+        dispatch(addChallenge(response))
+    })
+    .catch(error => {
+        // dispatch(addKidFailed(error))
+        alert('Failed'+error)
+    });
+};
+
+export const addChallenge = (user) => ({
+    type: ActionTypes.ADD_CHALLENGE,
+    payload: user
+})
+export const addChallengeLoading= ()=>({
+    type: ActionTypes.ADD_CHALLENGE_LOADING
+})
+export const addChallengeFailed= (error)=>({
+    type: ActionTypes.ADD_CHALLENGE_FAILED,
+    payload: error,
+})
+
+export const deleteChallenge = (user,kidId,categoryId,kid) => (dispatch) => {
+    setSelectedKid(kid)
+    return fetch(baseUrl + `users/${user._id}/kids/${kidId}/${categoryId}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization":`Bearer ${user.token} `,
+            "Content-Type": "application/json",
+            
+        },
+    })
+    .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                const error = new Error(`Error ${response.status}: ${response.statusText}`);
+                error.response = response;
+                throw error;
+            }
+        },
+        error => { throw error; }
+    )
+    .then(response => response.json())
+    .then(response => {
+        response.token = user.token
+        dispatch(deleteUserChallenge(response))
+    })
+    .catch(error => {
+        // dispatch(addKidFailed(error))
+        alert('Failed'+error)
+    });
+};
+
+export const deleteUserChallenge = (user) => ({
+    type: ActionTypes.DELETE_CHALLENGE,
+    payload: user
+})
+
+export const setSelectedKid =(kid)=> dispatch =>{
+    dispatch(setKid(kid))
+}
+
+export const setKid = (kid)=>({
+    type: ActionTypes.SELECT_KID,
+    payload: kid
+})
+
+export const addNewQuestionKid = (userId, kidId,challengeId,question,user) => (dispatch) => {
+    return fetch(baseUrl + `users/${userId}/kids/${kidId}/${challengeId}`, {
+        method: "POST",
+        headers: {
+            "Authorization":`Bearer ${user.token} `,
+            "Content-Type": "application/json",
+            
+        },
+        body: JSON.stringify(question) ,
+    })
+    .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                const error = new Error(`Error ${response.status}: ${response.statusText}`);
+                error.response = response;
+                throw error;
+            }
+        },
+        error => { throw error; }
+    )
+    .then(response => response.json())
+    .then(response => {
+        dispatch(addNewQuestion(response))
+    })
+    .catch(error => {
+        // dispatch(addKidFailed(error))
+        alert('Failed'+error)
+    });
+};
+
+export const addNewQuestion = (user) => ({
+    type: ActionTypes.ADD_NEW_QUESTION,
+    payload: user
+})
+export const addQuestionLoading= ()=>({
+    type: ActionTypes.ADD_KID_LOADING
+})
+export const addQuestionFailed= (error)=>({
+    type: ActionTypes.ADD_KID_FAILED,
+    payload: error,
+})
+
+export const deleteQuestionKid = (user, kidId,challengeId,questionId,question) => (dispatch) => {
+    // console.log(user.token)
+    console.log(questionId)
+    //console.log(`users/${user._id}/kids/${kidId}/${challengeId}/${question._id}`)
+    return fetch(baseUrl + `users/${user.parent._id}/kids/${kidId}/${challengeId}/${questionId}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization":`Bearer ${user.token} `,
+            "Content-Type": "application/json",
+            
+        },
+        body: JSON.stringify(question) ,
+    })
+    .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                const error = new Error(`Error ${response.status}: ${response.statusText}`);
+                error.response = response;
+                throw error;
+            }
+        },
+        error => { throw error; }
+    )
+    .then(response => response.json())
+    .then(response => {
+        console.log(`${user.token}******************************************************************************************************************`)
+        response.token = user.token
+        dispatch(deleteQuestion(response))
+    })
+    .catch(error => {
+        // dispatch(addKidFailed(error))
+        alert('Failed'+error)
+    });
+};
+
+export const deleteQuestion = (user) => ({
+    type: ActionTypes.ADD_NEW_QUESTION,
+    payload: user
+})
+export const deleteQuestionLoading= ()=>({
+    type: ActionTypes.ADD_KID_LOADING
+})
+export const deleteQuestionFailed= (error)=>({
+    type: ActionTypes.ADD_KID_FAILED,
+    payload: error,
+})
+
+export const editQuestionKid = (user, kidId,challengeId,questionId,question) => (dispatch) => {
+    // console.log(user.token)
+    return fetch(baseUrl + `users/${user.parent._id}/kids/${kidId}/${challengeId}/${questionId}`, {
+        method: "PUT",
+        headers: {
+            "Authorization":`Bearer ${user.token} `,
+            "Content-Type": "application/json",
+            
+        },
+        body: JSON.stringify(question) ,
+    })
+    .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                const error = new Error(`Error ${response.status}: ${response.statusText}`);
+                error.response = response;
+                throw error;
+            }
+        },
+        error => { throw error; }
+    )
+    .then(response => response.json())
+    .then(response => {
+        response.token = user.token
+        dispatch(deleteQuestion(response))
+    })
+    .catch(error => {
+        // dispatch(addKidFailed(error))
+        alert('Failed'+error)
+    });
+};
+
+export const updateLastAccessed = (user, kidId,challengeId,lastAccessed) => (dispatch) => {
+    // console.log(user.token)
+    return fetch(baseUrl + `users/${user.parent._id}/kids/${kidId}/${challengeId}`, {
+        method: "PUT",
+        headers: {
+            "Authorization":`Bearer ${user.token} `,
+            "Content-Type": "application/json",
+            
+        },
+        body: JSON.stringify(lastAccessed) ,
+    })
+    .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                const error = new Error(`Error ${response.status}: ${response.statusText}`);
+                error.response = response;
+                throw error;
+            }
+        },
+        error => { throw error; }
+    )
+    .then(response => response.json())
+    .then(response => {
+        response.token = user.token
+        dispatch(deleteQuestion(response))
+    })
+    .catch(error => {
+        // dispatch(addKidFailed(error))
+        alert('Failed'+error)
+    });
+};

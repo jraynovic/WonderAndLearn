@@ -20,3 +20,17 @@ export const SIGN_UP_FAILED = 'SIGN_UP_FAILED'
 export const LOG_IN = 'LOG_IN'
 export const LOG_IN_LOADING = 'LOG_IN_LOADING'
 export const LOG_IN_FAILED = 'LOG_IN_FAILED'
+
+export const ADD_KID = 'ADD_KID'
+export const ADD_KID_LOADING = 'ADD_KID_LOADING'
+export const ADD_KID_FAILED = 'ADD_KID_FAILED'
+
+export const SELECT_KID = 'SELECT_KID'
+
+export const REMOVE_KID = 'REMOVE_KID'
+
+export const ADD_CHALLENGE = 'ADD_CHALLENGE'
+export const DELETE_CHALLENGE = 'DELETE_CHALLENGE'
+
+export const ADD_NEW_QUESTION = 'ADD_NEW_QUESTION';
+

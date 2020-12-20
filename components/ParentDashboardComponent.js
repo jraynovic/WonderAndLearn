@@ -1,21 +1,29 @@
 import React, { Component } from 'react'
 import {TouchableOpacity,Text,TextInput,View, StyleSheet,Image, KeyboardAvoidingView, ScrollView, SafeAreaView, FlatList, ActivityIndicator,Modal} from 'react-native';
-import { signUp, logIn } from '../redux/ActionCreators';
+import { addNewKid, deleteKid, setSelectedKid } from '../redux/ActionCreators';
 import {connect} from 'react-redux'
 import * as Font from 'expo-font';
-import { checkForUpdateAsync } from 'expo/build/Updates/Updates';
 import { Input } from 'react-native-elements';
 import newUser from '../assets/NewUser.png'
+import rainbow from '../assets/rainbowHills.png'
+import cat from '../assets/Cat.png'
+import dinosaur from '../assets/Dinosaur.png'
+import dog from '../assets/Dog.png'
 import RingProgress from './RingProgressComponent'
+import ParentKidComponent from './ParentKidComponent'
+import {Icon } from 'react-native-elements'
 
 const mapDispatchToProps = {
     signUp:(user)=> signUp(user),
-    logIn:(user)=>logIn(user)
+    logIn:(user)=>logIn(user),
+    addNewKid:(user)=>addNewKid(user),
+    deleteKid:(user,kidId)=>deleteKid(user,kidId),
+    setSelectedKid:(kid)=>setSelectedKid(kid)
 }
 
 const mapStateToProps = state =>{
     return({
-     users: state.users
+     user: state.user
     })
     
 }
@@ -27,7 +35,9 @@ class ParentDashboardComponent extends Component {
             parent:this.props.parent,
             fontsLoaded:false,
             modalVisible: false,
-            currentKid: '',
+            selectedKid: {},
+            newKid:'',
+            selectedImage:'',
             
             
         }
@@ -45,7 +55,7 @@ class ParentDashboardComponent extends Component {
 
     componentDidMount(){
         this._loadFontsAsync()
-        this.setState({modalVisible:false})
+        this.setState({modalVisible:false,})
     }
 
     renderUserStats = () =>{
@@ -65,7 +75,70 @@ class ParentDashboardComponent extends Component {
             )
         }
     }
-    
+
+    setModalVisible = (visible) => {
+        this.setState({ modalVisible: visible });
+      }
+
+    submitNewKid = ()=>{
+        const user = {
+            token:this.props.user.token,
+            id:this.props.user.id,
+            kid: {
+                name: this.state.newKid,
+                image: this.state.selectedImage
+            }
+            
+        }
+        this.props.addNewKid(user)
+        this.setModalVisible(!this.state.modalVisible)
+
+    }
+    RenderImage = (image) =>{
+        if(image === '../assets/rainbowHills.png' ){
+            return(
+                <Image style={ this.props.user.selectedKid.image === '../assets/rainbowHills.png' ? styles.fadedImage: styles.image} source = {rainbow}/>
+            )
+        } else if(image === '../assets/Cat.png'){
+            return (
+                <Image style={ this.props.user.selectedKid.image === '../assets/Cat.png' ? styles.fadedImage: styles.image} source = {cat}/>
+            )
+        } else if( image === '../assets/Dinosaur.png'){
+            return(
+                <Image style={ this.props.user.selectedKid.image === '../assets/Dinosaur.png' ? styles.fadedImage: styles.image} source={dinosaur}/>
+            )
+        }else if( image === '../assets/Dog.png'){
+            return(
+                <Image style={styles.image} source={dog}/>
+            )
+        }
+    }
+
+    RenderKids = ()=>{
+        return(
+            this.props.user.kids.map(kid=>{
+                return (
+                    <TouchableOpacity
+                        key={kid._id} 
+                        style={styles.centered}
+                        // onPress={()=>this.setState({selectedKid:kid})}    
+                        onPress={()=>this.props.setSelectedKid(kid)}    
+                    >
+                        {this.RenderImage(kid.image)}
+                        <Text style={styles.profileText}>{kid.name}</Text>
+                    </TouchableOpacity>
+                )
+            })
+        )
+    }
+     deleteKid = () =>{
+        this.props.setSelectedKid({})
+        this.props.deleteKid(this.props.user.parent,this.props.user.selectedKid._id)
+        
+     }
+     handleNavigation=()=>{
+         this.props.navigation.navigate('Challenge',{id:this.props.user.selectedKid._id})
+     }
 
     render() {
         if(!this.state.fontsLoaded){
@@ -77,37 +150,118 @@ class ParentDashboardComponent extends Component {
         }
         return (
             <View style={styles.main}>
+                <TouchableOpacity style={{marginTop:20,alignSelf:'right'}} onPress={()=>this.props.navigation.goBack()}>
+                    <Icon
+                    name='chevron-left'
+                    size='50'
+                    color='#ed553b'
+                    />
+                </TouchableOpacity>
                 <View style={styles.centered}>
                     <Text style={styles.title}>PARENT DASHBOARD</Text>
                 </View>
-                {/* <TouchableOpacity onPress={()=>alert(JSON.stringify(this.props.users.parent.kids))}>
-                    <Text>TEST</Text>
-                </TouchableOpacity> */}
                 <View style={styles.profiles}>
-                    {this.props.users.parent.kids ?
-                        <TouchableOpacity onPress={() => alert('Add new user')}>
+                    <View style={{height:150}}>
+                    <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                    >             
+                        <TouchableOpacity style={styles.centered} onPress={()=>this.setModalVisible(!this.state.modalVisible)}>
                             <Image source={newUser} style={styles.image} />
-                        </TouchableOpacity> : <View> </View>
-
-                    }
+                            <Text style={styles.profileText}>New User</Text>
+                        </TouchableOpacity>
+                        {this.RenderKids()}
+                    </ScrollView>
+                    </View>
                 </View>
 
                 <View style={styles.centered}>
                     <View>
-                        {this.renderUserStats()}
+                        {this.props.user.selectedKid  ? <ParentKidComponent kid ={this.props.user.selectedKid} delete={this.deleteKid} navigate={()=>this.handleNavigation()}/> :<View> </View>}
                     </View>
-                    <View style={{marginBottom:20}}>
-                        <RingProgress
-                            text= '650/1000'
-                            textFontSize={16}
-                            textFontColor='#ed553b' 
-                            progressRingWidth={10} 
-                            percent={65} 
-                            ringColor='#ed553b' 
-                            ringBgColor ='#f5d047' 
-                            radius={70}
-                        />
-                    </View>
+                </View>
+                <View>
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={this.state.modalVisible}
+                        onRequestClose={() => {
+                            Alert.alert("Modal has been closed.");
+                        }}
+                    >
+                        <KeyboardAvoidingView
+                            style={{flex:1,marginBottom:10}}
+                            behavior='padding'
+                            keyboardVerticalOffset='0'
+                        >
+                            <ScrollView>
+                                <View style={styles.modalView}>
+                                    <Text style={styles.modalX} onPress={() => this.setModalVisible(!this.state.modalVisible)}>x</Text>
+                                    <Text style={styles.modalTitle}>SELECT PROFILE PICTURE </Text>
+                                    <View style={{ height: 150 }}>
+                                        <ScrollView
+                                            horizontal
+                                            showsHorizontalScrollIndicator={false}
+                                        >   
+                                            <TouchableOpacity
+                                                onPress={()=>this.setState({selectedImage: '../assets/Dinosaur.png'})}
+                                            >
+                                                <Image source={dinosaur} style={
+                                                    !this.state.selectedImage || this.state.selectedImage === '../assets/Dinosaur.png' ? styles.image : styles.fadedImage} 
+                                                />
+                                            </TouchableOpacity>
+                                            <TouchableOpacity
+                                                onPress={()=>this.setState({selectedImage:'../assets/Cat.png'})}
+                                            >
+                                                <Image source={cat} style={
+                                                    !this.state.selectedImage || this.state.selectedImage === '../assets/Cat.png' ? styles.image : styles.fadedImage} 
+                                                />
+                                            </TouchableOpacity>
+                                            <TouchableOpacity
+                                                onPress={()=>this.setState({selectedImage:'../assets/Dog.png'})}
+                                            >
+                                                <Image source={dog} style={
+                                                    !this.state.selectedImage || this.state.selectedImage === '../assets/Dog.png' ? styles.image : styles.fadedImage}
+                                                />
+                                            </TouchableOpacity>
+                                            <TouchableOpacity
+                                                onPress={()=>this.setState({selectedImage:'../assets/rainbowHills.png'})}
+                                            >
+                                                <Image source={rainbow} style={
+                                                    !this.state.selectedImage || this.state.selectedImage === '../assets/rainbowHills.png' ? styles.image : styles.fadedImage}
+                                                />
+                                            </TouchableOpacity>
+                                        </ScrollView>
+                                    </View>
+                                    <View style={styles.fieldBackground}>
+                                        <TextInput
+                                            style={styles.centered}
+                                            placeholder='CHILDS NAME'
+                                            placeholderTextColor='#ed553b'
+                                            style={styles.fields}
+                                            value={this.state.newKid}
+                                            onChangeText={(e) => this.setState({ newKid: e })}
+                                        />
+                                    </View>
+                                    <View style={styles.modalButtons} >
+                                        <TouchableOpacity
+                                            style={styles.logInButton}
+                                            onPress={()=>this.setModalVisible(!this.state.modalVisible)}
+                                        >
+                                            <Text style={styles.logInButtonText}>CANCEL</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            style={styles.logInButton}
+                                            onPress={() => this.submitNewKid()}
+                                        >
+                                            <Text style={styles.logInButtonText}>SAVE</Text>
+                                        </TouchableOpacity>
+                                    </View>
+
+                                </View>
+                            </ScrollView>
+                        </KeyboardAvoidingView>
+                    </Modal>
                 </View>
             </View>
         )
@@ -124,23 +278,28 @@ const styles = StyleSheet.create({
         alignItems:'center',
         justifyContent:'center',
     },
+    scrollViewContainer:{
+        height:200,
+        maxHeight:200
+    },  
     title:{
-        fontFamily: 'Dosis',color:'#ed553b', marginTop:'20%',marginBottom:60,fontSize:40  
+        fontFamily: 'Dosis',color:'#ed553b', marginTop:'0%',marginBottom:0,fontSize:40  
     },
     fieldBackground:{
-        width:'60%',
+        width:'80%',
         marginTop:15,
-        backgroundColor:'rgba(255, 255, 255, 0.51)',
+        backgroundColor:'#f2f2f2',
         opacity:1,
         borderWidth:1,
         borderColor:'rgba(255, 255, 255, 0.51)',
         borderRadius:50,
-        color:'red'
+        color:'red',
+        alignItems:'center',
     },
     fields:{
         fontFamily: 'Dosis',
         color:'#ed553b', 
-        fontSize:40,     
+        fontSize:24,     
     },
     noUser:{
         fontFamily: 'Dosis',
@@ -155,16 +314,43 @@ const styles = StyleSheet.create({
         marginBottom:50
     },
     image:{
-        height:112,
-        width:95,
-        marginLeft:10
+        height:98,
+        width:84,
+        marginLeft:10,
+        opacity:1
+    },
+    fadedImage:{
+        height:95,
+        width:84,
+        marginLeft:10,
+        opacity:.5
     },
     
-    profiles:{
-        flex:1,
+    profileText:{
+        fontFamily: 'Dosis',color:'#ed553b', marginTop:0, fontSize:16  
+        
+    },
+    modalButtons:{
         flexDirection:'row',
-        alignContent:'flex-start',
-        justifyContent:'flex-start',
+        flex:1,
+        justifyContent:'space-around'
+    }
+    ,
+    logInButton:{
+        marginTop:40,
+        backgroundColor:'#ed553b',
+        color:'#fff',
+        borderRadius:50,
+        padding:5,
+        
+        alignItems:'center',
+        marginHorizontal:10
+    },
+    logInButtonText:{
+        fontFamily: 'Dosis',
+        color:'#fff', 
+        fontSize:16,
+        paddingHorizontal:10
     },
     forParentsButton:{
         width:175,
@@ -189,6 +375,11 @@ const styles = StyleSheet.create({
         fontSize:16,
         marginTop:200,
         marginLeft:8
+    },
+    modalX:{
+        fontSize:40,
+        alignSelf:'flex-end',
+        marginBottom:10
     },
     modalView: {
         margin: 30,
