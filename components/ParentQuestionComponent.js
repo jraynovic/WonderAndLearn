@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
         justifyContent:'flex-start'
     },
     title:{
-        fontFamily: 'Dosis',color:'#ed553b', marginTop:'40%',marginBottom:60,fontSize:40  
+        fontFamily: 'Dosis',color:'#ed553b', marginTop:'0%',marginBottom:60,fontSize:40  
     },
     questionText:{
         fontFamily: 'Dosis',color:'#fff',fontSize:16  

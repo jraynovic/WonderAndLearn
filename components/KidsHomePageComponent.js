@@ -93,9 +93,7 @@ class LogInComponent extends Component {
 
                 {this.RenderImage(this.props.user.selectedKid.image)}
                 <Text style={styles.userName}>{this.props.user.selectedKid.name}</Text>
-                {/* <Text>{JSON.stringify(this.props.user.selectedKid)}</Text> */}
                 <View>
-                    {/* <TouchableOpacity style={styles.row} onPress={()=>this.props.navigation.navigate('KidsChallenge')}> */}
                     <TouchableOpacity style={styles.row} onPress={()=>this.props.navigation.navigate('KidsChallenge')}>
                         <View style={styles.button}>
                             <View style={styles.row}>
@@ -103,7 +101,7 @@ class LogInComponent extends Component {
                             </View>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.row}>
+                    <TouchableOpacity style={styles.row} onPress={()=>this.props.navigation.navigate('Progress')}>
                         <View style={styles.button}>
                             <View style={styles.row}>
                                 <Text style={styles.buttonText}>PROGRESS</Text>
@@ -111,7 +109,7 @@ class LogInComponent extends Component {
 
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.row}>
+                    <TouchableOpacity style={styles.row} onPress={()=>this.props.navigation.navigate('Badges')}>
                         <View style={styles.button}>
                             <View style={styles.row}>
                                 <Text style={styles.buttonText}>BADGES</Text>
@@ -119,11 +117,13 @@ class LogInComponent extends Component {
                         </View>
                     </TouchableOpacity>
                 </View>
-
-                {/* Bottom Menu */}
-                {/* <KidsMenuComponent navProfile= {()=>this.changeScreen('profile')}/> */}
                 <View style={styles.menu}> 
-                    <KidsMenuComponent navProfile= {()=>this.changeScreen('Profile')}/>
+                    <KidsMenuComponent 
+                        navProfile= {()=>this.props.navigation.navigate('Profile')} 
+                        challenge= {()=>this.props.navigation.navigate('KidsChallenge')}
+                        progress = {()=>this.props.navigation.navigate('Progress')}
+                        badges ={()=>this.props.navigation.navigate('Badges')}
+                    />
                 </View>
 
             </View>
@@ -207,9 +207,9 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
     },
     menu: {
+        position:'absolute',
+        bottom:0,
         flexDirection: "row",
-        alignItems: 'flex-end',
-        marginTop:35
     },
     footer: {
         fontFamily: 'Dosis',

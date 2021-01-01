@@ -3,7 +3,6 @@ import {TouchableOpacity,Text,TextInput,View, StyleSheet, KeyboardAvoidingView, 
 import { signUp, logIn,logInFailed } from '../redux/ActionCreators';
 import {connect} from 'react-redux'
 import * as Font from 'expo-font';
-import { checkForUpdateAsync } from 'expo/build/Updates/Updates';
 
 
 const mapDispatchToProps = {

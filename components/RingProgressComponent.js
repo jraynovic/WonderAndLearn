@@ -1,5 +1,5 @@
-import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import React from "react";
+import { Text, View, StyleSheet } from "react-native";
 
 /**
  * Function that calculates rotation of the semicircle for firstProgressLayer
@@ -28,7 +28,7 @@ const renderThirdLayer = (
   bgRingWidth,
   progressRingWidth,
   innerRingStyle,
-  startDegrees,
+  startDegrees
 ) => {
   let rotation = 45 + startDegrees;
   let offsetLayerRotation = -135 + startDegrees;
@@ -193,9 +193,9 @@ const CircularProgress = ({
         bgRingWidth,
         progressRingWidth,
         innerRingStyle,
-        startDegrees,
+        startDegrees
       )}
-      
+
       <Text
         style={[
           styles.display,
@@ -203,11 +203,12 @@ const CircularProgress = ({
             fontSize: textFontSize,
             fontWeight: textFontWeight,
             color: textFontColor,
-            justifyContent:'center',
-            textAlign:'center'
+            justifyContent: "center",
+            textAlign: "center",
           },
-        ]}>
-        {text+'\nPOINTS'}
+        ]}
+      >
+        {text}
       </Text>
     </View>
   );
@@ -219,13 +220,13 @@ CircularProgress.defaultProps = {
   radius: 100,
   bgRingWidth: 12,
   progressRingWidth: 6,
-  ringColor: '#e7e7e7',
-  ringBgColor: '#ed553b',
+  ringColor: "#e7e7e7",
+  ringBgColor: "#ed553b",
   textFontSize: 40,
-  textFontColor: 'black',
-  textFontWeight: 'bold',
+  textFontColor: "black",
+  textFontWeight: "bold",
   clockwise: true,
-  bgColor: 'white',
+  bgColor: "white",
   startDegrees: 0,
 };
 
@@ -235,29 +236,34 @@ CircularProgress.defaultProps = {
  **/
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   baselayer: {
-    position: 'absolute',
+    position: "absolute",
+    
   },
   firstProgressLayer: {
-    position: 'absolute',
-    borderLeftColor: 'transparent',
-    borderBottomColor: 'transparent',
+    position: "absolute",
+    borderLeftColor: "transparent",
+    borderBottomColor: "transparent",
+    
   },
   secondProgressLayer: {
-    position: 'absolute',
-    borderLeftColor: 'transparent',
-    borderBottomColor: 'transparent',
+    position: "absolute",
+    borderLeftColor: "transparent",
+    borderBottomColor: "transparent",
   },
   offsetLayer: {
-    position: 'absolute',
-    borderLeftColor: 'transparent',
-    borderBottomColor: 'transparent',
+    position: "absolute",
+    borderLeftColor: "transparent",
+    borderBottomColor: "transparent",
+    
+    
   },
   display: {
-    position: 'absolute',
+    position: "absolute",
+    
   },
 });
 

@@ -15,7 +15,7 @@ const KidsMenuComponent =(props)=> {
     const [fontsLoaded, setFont] = useState(false);
     const _loadFontsAsync= async()=> {
         await Font.loadAsync(this.customFonts)
-        setFont(true)
+            setFont(true)
     }
     useEffect(() => {
         _loadFontsAsync()
@@ -39,22 +39,24 @@ const KidsMenuComponent =(props)=> {
                         <Text style={styles.menuText}>HOME</Text>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={props.navProfile}>
+                <TouchableOpacity onPress={props.challenge}>
                     <View style={styles.menuItem}>
                         <Image style={styles.image} source={Challenges} />
                         <Text style={styles.menuText}>CHALLENGES</Text>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={props.navProfile}>
+                <TouchableOpacity onPress={props.progress}>
                     <View style={styles.menuItem}>
                         <Image style={styles.image} source={KidsProgress} />
                         <Text style={styles.menuText}>PROGRESS</Text>
                     </View>
                 </TouchableOpacity>
-                <View style={styles.menuItem}>
-                    <Image style={styles.imageMedal} source={MedalIcon} />
-                    <Text style={styles.menuText}>BADGES</Text>
-                </View>
+                <TouchableOpacity onPress={props.badges}>
+                    <View style={styles.menuItem} >
+                        <Image style={styles.imageMedal} source={MedalIcon} />
+                        <Text style={styles.menuText}>BADGES</Text>
+                    </View>
+                </TouchableOpacity>
 
             </View>
         </View>

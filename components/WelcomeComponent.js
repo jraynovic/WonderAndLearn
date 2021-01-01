@@ -45,7 +45,7 @@ class WelcomeComponent extends Component {
         if(!this.state.fontsLoaded){
             return(
                 <View style={styles.main}>
-                    <Text style={styles.title}>Loading</Text>
+                    <Text>Loading</Text>
                 </View>
             )
         }

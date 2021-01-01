@@ -205,10 +205,11 @@ class ParentKidComponent extends Component {
                     <View style={styles.column}>
                         {/* <View style={styles.button} ><Text style={styles.buttonText}>PROGRESS</Text></View> */}
                         <RingProgress
-                            text= {`${this.state.totalPoints}/${this.state.totalQuestions}`}
+                            text= {`${this.state.totalPoints}/${this.state.totalQuestions} \nPOINTS`}
                             textFontSize={14}
                             textFontColor='#ed553b' 
                             progressRingWidth={10} 
+                            
                             percent={this.calculatePercent()} 
                             ringColor='#ed553b' 
                             ringBgColor ='#f5d047' 

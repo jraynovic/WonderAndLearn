@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
         justifyContent:'flex-start'
     },
     title:{
-        fontFamily: 'Dosis',color:'#ed553b', marginTop:'10%',marginBottom:60,fontSize:40  ,textAlign: 'center', 
+        fontFamily: 'Dosis',color:'#ed553b', marginTop:'0%',marginBottom:60,fontSize:40  ,textAlign: 'center', 
     },
     textBoxTitle:{
         justifyContent:'flex-start',

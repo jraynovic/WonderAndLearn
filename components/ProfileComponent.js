@@ -96,7 +96,10 @@ class ProfileComponent extends Component {
     RenderKids = () =>{
         if (this.props.user.kids) {
             return(
-                <ScrollView horizontal>
+                <ScrollView 
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                >
                     {this.props.user.kids.map(kid=>{
                         return (
                             <TouchableOpacity key ={kid._id} style={styles.kidsProfile} onPress={()=>this.handleNav(kid)}>

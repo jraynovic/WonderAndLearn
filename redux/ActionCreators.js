@@ -1,8 +1,5 @@
 import * as ActionTypes from './ActionTypes';
 import { baseUrl } from '../shared/baseUrl';
-import axios from 'axios';
-
-const server = 'http://localhost:5001/'
 
 export const fetchQuestions = () => dispatch => {
  

@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
-import { TouchableOpacity,Text,TextInput,View, StyleSheet, ActivityIndicator, Switch } from 'react-native';
+import { TouchableOpacity,Text,TextInput,View, StyleSheet, ActivityIndicator, Switch, Image} from 'react-native';
 import { signUp, logIn,logInFailed } from '../redux/ActionCreators';
 import {connect} from 'react-redux'
+import CheckboxChecked from '../assets/CheckboxChecked.png'
+import Checkbox from '../assets/Checkbox.png'
 import * as SecureStore from 'expo-secure-store';
 import * as Font from 'expo-font';
 
@@ -81,6 +83,15 @@ class LogInComponent extends Component {
         })
     }
 
+    renderCheckBox = ()=>{
+        if(this.state.remember){
+            return(<Image style={styles.image} source={CheckboxChecked} />)
+        }else{
+            return(<Image style={styles.image} source={Checkbox} />)
+
+        }
+    }
+
     render() {
         if(!this.state.fontsLoaded){
             return(
@@ -92,7 +103,7 @@ class LogInComponent extends Component {
         const { navigate } = this.props.navigation;
         if(this.props.user.loading){
             return (
-                <View style={styles.main}>
+                <View style={styles.loading}>
                     <ActivityIndicator size="large" color="#ed553b"/>
                 </View>
             )
@@ -120,15 +131,10 @@ class LogInComponent extends Component {
                         onChangeText={(e) => this.setState({ password: e })}
                     />
                 </View>
-                <View style={styles.rememberRow}>
-                    <Text style={styles.rememberText}>Stay logged in?</Text>
-                    <Switch
-                        trackColor={{ false: "#fff", true: "#fff" }}
-                        thumbColor={ this.state.remember? 	'#228B22': '#ed553b'}
-                        value= {this.state.remember}
-                        onValueChange= {()=>this.setState({remember:!this.state.remember})}
-                    />
-                </View>
+                <TouchableOpacity onPress={()=>this.setState({remember:!this.state.remember})} style={styles.rememberRow}>
+                    {this.renderCheckBox()}
+                    <Text style={styles.rememberText}>REMEMBER ME?</Text>
+                </TouchableOpacity>
                 <View>
                     <TouchableOpacity
                         style={styles.logInButton}
@@ -157,6 +163,12 @@ const styles = StyleSheet.create({
         flex:1,
         alignItems:'center',
         justifyContent:'flex-start'
+    },
+    loading:{
+        backgroundColor:'#f6d55c',
+        flex:1,
+        alignItems:'center',
+        justifyContent:'center'
     },
     title:{
         fontFamily: 'Dosis',color:'#ed553b', marginTop:'40%',marginBottom:60,fontSize:40  
@@ -203,13 +215,18 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         marginTop:10,
         alignItems:'center',
-        justifyContent:'flex-end'
+        marginLeft:-60
     },  
     rememberText:{
         fontFamily: 'Dosis',
         color:'#ed553b', 
         fontSize:16,
         marginRight:5
+    },
+    image:{
+        marginRight:10,
+        height:25,
+        width:25
     },
     footer:{
         fontFamily: 'Dosis',
@@ -218,5 +235,6 @@ const styles = StyleSheet.create({
         marginTop:200,
         marginLeft:8
     }
+    
 })
 export default connect(mapStateToProps,mapDispatchToProps)(LogInComponent)
