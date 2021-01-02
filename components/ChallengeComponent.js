@@ -25,8 +25,6 @@ import MathIcon from "../assets/MathIcon.png";
 import ReadingIcon from "../assets/ReadingIcon.png";
 import ScienceIcon from "../assets/ScienceIcon.png";
 
-
-//test comment to verfify push to dev branch
 const mapDispatchToProps = {
   addNewChallenge: (user, kidId, category) =>
     addNewChallenge(user, kidId, category),
@@ -93,6 +91,7 @@ class ChallengeComponent extends Component {
       this.setModalVisible(!this.state.modalVisible);
     });
   };
+
   deleteChallenge = () => {
     this.setModalVisible(!this.state.modalVisible);
     this.props.deleteChallenge(
@@ -129,6 +128,7 @@ class ChallengeComponent extends Component {
         });
     }
   };
+
   handleNewSubject = () => {
     this.props
       .addNewChallenge(
@@ -163,7 +163,7 @@ class ChallengeComponent extends Component {
 
     if (this.props.user.loading) {
       return (
-        <View style={styles.main}>
+        <View style={styles.loading}>
           <ActivityIndicator size="large" color="#ed553b" />
         </View>
       );
@@ -173,7 +173,7 @@ class ChallengeComponent extends Component {
       <View style={styles.main}>
         {Platform.OS === "ios" ? (
           <TouchableOpacity
-            style={{ marginTop: 15, alignSelf: "right" }}
+            style={styles.iosNavIcon}
             onPress={() => this.props.navigation.goBack()}
           >
             <Icon name="chevron-left" size="50" color="#ed553b" />
@@ -181,7 +181,6 @@ class ChallengeComponent extends Component {
         ) : (
           <View style={{ marginTop: 30 }} />
         )}
-
         <Text style={styles.title}>CHALLENGES</Text>
         <Text>{JSON.stringify(this.props.user.parent.kids.categories)}</Text>
         {this.state.newSubjectInput ? (
@@ -221,7 +220,6 @@ class ChallengeComponent extends Component {
           </TouchableOpacity>
         )}
         {this.renderChallenges()}
-
         <View>
           <Modal
             animationType="slide"
@@ -383,18 +381,18 @@ class ChallengeComponent extends Component {
                 </View>
                 <View style={styles.modalButtons}>
                   <TouchableOpacity
-                    style={styles.logInButton}
+                    style={styles.modalButton}
                     onPress={() =>
                       this.setCatModalVisible(!this.state.catModalVisible)
                     }
                   >
-                    <Text style={styles.logInButtonText}>CANCEL</Text>
+                    <Text style={styles.modalButtonText}>CANCEL</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    style={styles.logInButton}
+                    style={styles.modalButton}
                     onPress={() => this.handleNewSubject()}
                   >
-                    <Text style={styles.logInButtonText}>SAVE</Text>
+                    <Text style={styles.modalButtonText}>SAVE</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -412,6 +410,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-start",
+  },
+  loading:{
+    backgroundColor:'#f6d55c',
+    flex:1,
+    alignItems:'center',
+    justifyContent:'center'
   },
   title: {
     fontFamily: "Dosis",
@@ -437,8 +441,6 @@ const styles = StyleSheet.create({
     color: "red",
   },
   image: {
-    // height: 70,
-    // width: 65,
     height: 95,
     width: 84,
     marginLeft: 10,
@@ -448,8 +450,6 @@ const styles = StyleSheet.create({
   fadedImage: {
     height: 70,
     width: 65,
-    // height: 95,
-    // width: 84,
     marginLeft: 10,
     opacity: 0.5,
   },
@@ -538,11 +538,10 @@ const styles = StyleSheet.create({
   modalButtons: {
     flexDirection: "row",
     flex: 1,
-    // justifyContent:'space-around'
   },
   modalView: {
     marginHorizontal: 30,
-    // marginTop: 140,
+    marginTop: 5,
     backgroundColor: "#fff",
     borderRadius: 20,
     paddingHorizontal: 35,
@@ -557,7 +556,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
-  logInButton: {
+  modalButton: {
     marginTop: 40,
     backgroundColor: "#ed553b",
     color: "#fff",
@@ -567,21 +566,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: 10,
   },
-  logInButtonText: {
+  modalButtonText: {
     fontFamily: "Dosis",
     color: "#fff",
     fontSize: 16,
     paddingHorizontal: 10,
   },
-  iconScroll: {
-    //   backgroundColor:'#fff6e6'
-  },
-  footer: {
-    fontFamily: "Dosis",
-    color: "#ed553b",
-    fontSize: 16,
-    marginTop: 200,
-    marginLeft: 8,
+  iosNavIcon: {
+     marginTop: 15, alignSelf:'flex-start' 
   },
 });
 export default connect(mapStateToProps, mapDispatchToProps)(ChallengeComponent);
