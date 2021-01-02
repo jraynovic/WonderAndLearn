@@ -183,7 +183,7 @@ class ParentKidComponent extends Component {
         if(!this.props.user.selectedKid.name){
             return(
                 <View style={styles.noUserContainer}>
-                    <Text style={styles.noUser}> SELECT A USER</Text>
+                    <Text style={styles.noUser}> SELECT OR ADD USER</Text>
                 </View>
             )
         }

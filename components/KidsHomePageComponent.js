@@ -207,6 +207,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
     },
     menu: {
+        marginTop:5,
         position:'absolute',
         bottom:0,
         flexDirection: "row",

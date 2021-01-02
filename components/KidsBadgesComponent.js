@@ -188,6 +188,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   menu: {
+    marginTop:5,
     position: "absolute",
     bottom: 0,
     flexDirection: "row",

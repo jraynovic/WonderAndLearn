@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
-import { TouchableOpacity,Text,TextInput,View, StyleSheet, ActivityIndicator, Switch, Image} from 'react-native';
+import { TouchableOpacity,Text,TextInput,View, StyleSheet, ActivityIndicator, Image} from 'react-native';
 import { signUp, logIn,logInFailed } from '../redux/ActionCreators';
 import {connect} from 'react-redux'
 import CheckboxChecked from '../assets/CheckboxChecked.png'
 import Checkbox from '../assets/Checkbox.png'
 import * as SecureStore from 'expo-secure-store';
 import * as Font from 'expo-font';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
+ 
 
 
 const mapDispatchToProps = {
@@ -109,7 +111,12 @@ class LogInComponent extends Component {
             )
         } 
         return (
-            <View style={styles.main}>
+            <KeyboardAwareScrollView  style={styles.main} 
+              style={{ backgroundColor: '#f6d55c' }}
+              resetScrollToCoords={{ x: 0, y: 0 }}
+              contentContainerStyle={styles.main}
+              scrollEnabled={true}
+            >
                 
                 <Text style={styles.title}>LOG IN</Text>
                 <View style= {styles.fieldBackground}>
@@ -151,7 +158,7 @@ class LogInComponent extends Component {
                         <Text style={styles.footer}>NO ACCOUNT YET? SIGN UP</Text>
                     </TouchableOpacity>
                 </View>
-            </View>
+            </KeyboardAwareScrollView >
         )
 
     }
@@ -171,7 +178,7 @@ const styles = StyleSheet.create({
         justifyContent:'center'
     },
     title:{
-        fontFamily: 'Dosis',color:'#ed553b', marginTop:'40%',marginBottom:60,fontSize:40  
+        fontFamily: 'Dosis',color:'#ed553b', marginTop:'25%',marginBottom:60,fontSize:40  
     },
     errMess:{
         fontFamily: 'Dosis',color:'#ed553b', marginTop:10,fontSize:24

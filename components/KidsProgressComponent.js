@@ -55,7 +55,7 @@ class KidsProgressComponent extends Component {
   renderProgressCards = () => {
     return this.props.user.selectedKid.categories.map((category) => {
       return (
-        <View style={styles.progressCard}>
+        <View id={category._id} style={styles.progressCard}>
           <Text style={styles.cardTitle}>{category.name}</Text>
           <View>{this.renderIcon(category.image)}</View>
           <View style={styles.progressRing}>
@@ -110,7 +110,7 @@ class KidsProgressComponent extends Component {
       ).length;
       const totalQuestions = category.questions.length;
       return (
-        <View>
+        <View id={category._id}>
           <View style={styles.pointBar}>
             <View
               style={
@@ -155,22 +155,31 @@ class KidsProgressComponent extends Component {
     }
     return (
       <View style={styles.main}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false} >
           <Text style={styles.title}>WONDER + LEARN</Text>
           <Text style={styles.subTitle}>PROGRESS</Text>
-          <View style={{ flex: 1, height: 210 }}>
-            <View style={styles.progressCards}></View>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <View style={{ height: 210}}>
+            <ScrollView
+              style={styles.progressCards}
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{paddingHorizontal:10}}
+        
+            >
               {this.renderProgressCards()}
             </ScrollView>
           </View>
-          <View>
-            <Text style={styles.subTitle}>POINTS EARNED</Text>
-            <View style={{ flex: 1, height: 200 }}>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                <View style={styles.points}>{this.renderPointsEarned()}</View>
-              </ScrollView>
-            </View>
+
+          <Text style={styles.subTitle}>POINTS EARNED</Text>
+          <View style={{ flex: 1, height: 200 }}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{ width: "100%" }}
+              
+            >
+              <View style={styles.points}>{this.renderPointsEarned()}</View>
+            </ScrollView>
           </View>
         </ScrollView>
         <View style={styles.menu}>
@@ -209,11 +218,12 @@ const styles = StyleSheet.create({
   },
   progressCards: {
     marginLeft: 10,
+  
   },
   progressCard: {
     backgroundColor: "#fce9a2",
     height: "100%",
-    width: "35%",
+    width: 150,
     marginRight: 8,
     borderRadius: 15,
     alignItems: "center",
@@ -254,6 +264,7 @@ const styles = StyleSheet.create({
     textAlign: "left",
   },
   menu: {
+    marginTop: 5,
     position: "absolute",
     bottom: 0,
     flexDirection: "row",

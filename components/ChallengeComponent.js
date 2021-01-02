@@ -166,19 +166,22 @@ class ChallengeComponent extends Component {
         </View>
       );
     }
+    
     return (
       <View style={styles.main}>
-        <TouchableOpacity
-          style={{ marginTop: 30, alignSelf: "right" }}
-          onPress={() => this.props.navigation.navigate("ParentDashboard")}
-        >
-          <Icon name="chevron-left" size="50" color="#ed553b" />
-        </TouchableOpacity>
+        {Platform.OS === "ios" ? (
+          <TouchableOpacity
+            style={{ marginTop: 15, alignSelf: "right" }}
+            onPress={() => this.props.navigation.goBack()}
+          >
+            <Icon name="chevron-left" size="50" color="#ed553b" />
+          </TouchableOpacity>
+        ) : (
+          <View style={{ marginTop: 30 }} />
+        )}
+
         <Text style={styles.title}>CHALLENGES</Text>
-        {/* <Text>{JSON.stringify(this.state.currentKid.categories)}</Text>
-                <Text>{this.props.navigation.state.params.id}</Text> */}
         <Text>{JSON.stringify(this.props.user.parent.kids.categories)}</Text>
-        {/* <Text>{JSON.stringify(this.props.users.parent.token)}</Text> */}
         {this.state.newSubjectInput ? (
           <KeyboardAvoidingView>
             <TouchableOpacity
@@ -276,131 +279,124 @@ class ChallengeComponent extends Component {
               Alert.alert("Modal has been closed.");
             }}
           >
-            <KeyboardAvoidingView
-              style={{ flex: 1, marginBottom: 10 }}
-              behavior="padding"
-              keyboardVerticalOffset="0"
-            >
-              <ScrollView>
-                <View style={styles.modalView}>
-                  <Text
-                    style={styles.modalX}
+            <ScrollView>
+              <View style={styles.modalView}>
+                <Text
+                  style={styles.modalX}
+                  onPress={() =>
+                    this.setCatModalVisible(!this.state.catModalVisible)
+                  }
+                >
+                  x
+                </Text>
+                <Text style={styles.modalTitle}>SELECT A CATEGORY ICON </Text>
+                <View style={{ height: 150 }}>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    style={styles.iconScroll}
+                  >
+                    <TouchableOpacity
+                      onPress={() =>
+                        this.setState({
+                          selectedImage: "../assets/MathIcon.png",
+                        })
+                      }
+                    >
+                      <Image
+                        source={MathIcon}
+                        style={
+                          !this.state.selectedImage ||
+                          this.state.selectedImage === "../assets/MathIcon.png"
+                            ? styles.image
+                            : styles.fadedImage
+                        }
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() =>
+                        this.setState({
+                          selectedImage: "../assets/ReadingIcon.png",
+                        })
+                      }
+                    >
+                      <Image
+                        source={ReadingIcon}
+                        style={
+                          !this.state.selectedImage ||
+                          this.state.selectedImage ===
+                            "../assets/ReadingIcon.png"
+                            ? styles.image
+                            : styles.fadedImage
+                        }
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() =>
+                        this.setState({
+                          selectedImage: "../assets/ScienceIcon.png",
+                        })
+                      }
+                    >
+                      <Image
+                        source={ScienceIcon}
+                        style={
+                          !this.state.selectedImage ||
+                          this.state.selectedImage ===
+                            "../assets/ScienceIcon.png"
+                            ? styles.image
+                            : styles.fadedImage
+                        }
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() =>
+                        this.setState({
+                          selectedImage: "../assets/HistoryIcon.png",
+                        })
+                      }
+                    >
+                      <Image
+                        source={HistoryIcon}
+                        style={
+                          !this.state.selectedImage ||
+                          this.state.selectedImage ===
+                            "../assets/HistoryIcon.png"
+                            ? styles.image
+                            : styles.fadedImage
+                        }
+                      />
+                    </TouchableOpacity>
+                  </ScrollView>
+                </View>
+                <View style={styles.fieldBackground}>
+                  <TextInput
+                    style={styles.centered}
+                    placeholder="CATEGORY NAME"
+                    placeholderTextColor="#ed553b"
+                    style={styles.modalFields}
+                    value={this.state.newSubject}
+                    onChangeText={(e) => this.setState({ newSubject: e })}
+                  />
+                </View>
+                <View style={styles.modalButtons}>
+                  <TouchableOpacity
+                    style={styles.logInButton}
                     onPress={() =>
                       this.setCatModalVisible(!this.state.catModalVisible)
                     }
                   >
-                    x
-                  </Text>
-                  <Text style={styles.modalTitle}>SELECT A CATEGORY ICON </Text>
-                  <View style={{ height: 150 }}>
-                    <ScrollView
-                      horizontal
-                      showsHorizontalScrollIndicator={false}
-                      style={styles.iconScroll}
-                    >
-                      <TouchableOpacity
-                        onPress={() =>
-                          this.setState({
-                            selectedImage: "../assets/MathIcon.png",
-                          })
-                        }
-                      >
-                        <Image
-                          source={MathIcon}
-                          style={
-                            !this.state.selectedImage ||
-                            this.state.selectedImage ===
-                              "../assets/MathIcon.png"
-                              ? styles.image
-                              : styles.fadedImage
-                          }
-                        />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={() =>
-                          this.setState({
-                            selectedImage: "../assets/ReadingIcon.png",
-                          })
-                        }
-                      >
-                        <Image
-                          source={ReadingIcon}
-                          style={
-                            !this.state.selectedImage ||
-                            this.state.selectedImage ===
-                              "../assets/ReadingIcon.png"
-                              ? styles.image
-                              : styles.fadedImage
-                          }
-                        />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={() =>
-                          this.setState({
-                            selectedImage: "../assets/ScienceIcon.png",
-                          })
-                        }
-                      >
-                        <Image
-                          source={ScienceIcon}
-                          style={
-                            !this.state.selectedImage ||
-                            this.state.selectedImage ===
-                              "../assets/ScienceIcon.png"
-                              ? styles.image
-                              : styles.fadedImage
-                          }
-                        />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={() =>
-                          this.setState({
-                            selectedImage: "../assets/HistoryIcon.png",
-                          })
-                        }
-                      >
-                        <Image
-                          source={HistoryIcon}
-                          style={
-                            !this.state.selectedImage ||
-                            this.state.selectedImage ===
-                              "../assets/HistoryIcon.png"
-                              ? styles.image
-                              : styles.fadedImage
-                          }
-                        />
-                      </TouchableOpacity>
-                    </ScrollView>
-                  </View>
-                  <View style={styles.fieldBackground}>
-                    <TextInput
-                      style={styles.centered}
-                      placeholder="CATEGORY NAME"
-                      placeholderTextColor="#ed553b"
-                      style={styles.modalFields}
-                      value={this.state.newSubject}
-                      onChangeText={(e) => this.setState({ newSubject: e })}
-                    />
-                  </View>
-                  <View style={styles.modalButtons}>
-                    <TouchableOpacity
-                      style={styles.logInButton}
-                      onPress={() =>
-                        this.setCatModalVisible(!this.state.catModalVisible)
-                      }
-                    >
-                      <Text style={styles.logInButtonText}>CANCEL</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.logInButton}
-                      onPress={() => this.handleNewSubject()}
-                    >
-                      <Text style={styles.logInButtonText}>SAVE</Text>
-                    </TouchableOpacity>
-                  </View>
+                    <Text style={styles.logInButtonText}>CANCEL</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.logInButton}
+                    onPress={() => this.handleNewSubject()}
+                  >
+                    <Text style={styles.logInButtonText}>SAVE</Text>
+                  </TouchableOpacity>
                 </View>
-              </ScrollView>
-            </KeyboardAvoidingView>
+              </View>
+            </ScrollView>
           </Modal>
         </View>
       </View>
@@ -439,15 +435,19 @@ const styles = StyleSheet.create({
     color: "red",
   },
   image: {
-    height: 70,
-    width: 65,
+    // height: 70,
+    // width: 65,
+    height: 95,
+    width: 84,
     marginLeft: 10,
     opacity: 1,
     resizeMode: "contain",
   },
   fadedImage: {
-    height: 95,
-    width: 84,
+    height: 70,
+    width: 65,
+    // height: 95,
+    // width: 84,
     marginLeft: 10,
     opacity: 0.5,
   },
@@ -540,7 +540,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     marginHorizontal: 30,
-    marginTop: 140,
+    // marginTop: 140,
     backgroundColor: "#fff",
     borderRadius: 20,
     paddingHorizontal: 35,

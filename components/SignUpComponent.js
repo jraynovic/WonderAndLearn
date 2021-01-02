@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import {TouchableOpacity,Text,TextInput,View, StyleSheet, KeyboardAvoidingView, ScrollView, SafeAreaView, FlatList, ActivityIndicator} from 'react-native';
+import {TouchableOpacity,Text,TextInput,View, StyleSheet,  ScrollView, SafeAreaView, FlatList, ActivityIndicator} from 'react-native';
 import { signUp, logIn } from '../redux/ActionCreators';
 import {connect} from 'react-redux'
 import * as Font from 'expo-font';
-
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 const mapDispatchToProps = {
     signUp:(user)=> signUp(user),
@@ -64,21 +64,19 @@ class SignUpComponent extends Component {
     
     submitNewUser = () => {
         if (this.state.valdationError) {
-            alert('ERROR PRESENT')
+            alert('PLEASE COMPLETE FIELDS CORRECTLY')
         } else {
-            alert('NO ERROR PRESENT')
-
-            // this.setState({ username: this.state.email })
-            // const newUser = {
-            //     username: this.state.email,
-            //     email: this.state.email,
-            //     password: this.state.password,
-            //     firstname: this.state.firstname,
-            //     lastname: this.state.lastname,
-            //     pin: this.state.pin,
-            // }
-            // this.props.signUp(JSON.stringify(newUser))
-            //     .then(this.props.navigation.navigate('Profile'))
+            this.setState({ username: this.state.email })
+            const newUser = {
+                username: this.state.email,
+                email: this.state.email,
+                password: this.state.password,
+                firstname: this.state.firstname,
+                lastname: this.state.lastname,
+                pin: this.state.pin,
+            }
+            this.props.signUp(JSON.stringify(newUser))
+                .then(this.props.navigation.navigate('Profile'))
         }
     }
 
@@ -153,8 +151,12 @@ class SignUpComponent extends Component {
         }
         const { navigate } = this.props.navigation;
         return (
-            <ScrollView
-                contentContainerStyle= {styles.main}
+            <ScrollView>
+            <KeyboardAwareScrollView  style={styles.main} 
+              style={{ backgroundColor: '#f6d55c' }}
+              resetScrollToCoords={{ x: 0, y: 0 }}
+              contentContainerStyle={styles.main}
+              enableOnAndroid={true} 
             >
              
                 
@@ -253,8 +255,9 @@ class SignUpComponent extends Component {
                     </TouchableOpacity>
     
                 </View>
+            </KeyboardAwareScrollView>
             </ScrollView>
-            // </KeyboardAvoidingView>
+           
            
         )
     }
