@@ -153,15 +153,8 @@ class ChallengeComponent extends Component {
   };
 
   render() {
-    if (!this.state.fontsLoaded) {
-      return (
-        <View>
-          <Text>Loading</Text>
-        </View>
-      );
-    }
-
-    if (this.props.user.loading) {
+    
+    if (!this.state.fontsLoaded || this.props.user.loading) {
       return (
         <View style={styles.loading}>
           <ActivityIndicator size="large" color="#ed553b" />
