@@ -25,6 +25,8 @@ import MathIcon from "../assets/MathIcon.png";
 import ReadingIcon from "../assets/ReadingIcon.png";
 import ScienceIcon from "../assets/ScienceIcon.png";
 
+
+//test comment to verfify push to dev branch
 const mapDispatchToProps = {
   addNewChallenge: (user, kidId, category) =>
     addNewChallenge(user, kidId, category),
@@ -166,7 +168,7 @@ class ChallengeComponent extends Component {
         </View>
       );
     }
-    
+
     return (
       <View style={styles.main}>
         {Platform.OS === "ios" ? (
