@@ -129,6 +129,7 @@ class KidsProgressComponent extends Component {
       );
     });
   };
+  
   render() {
     if (!this.state.fontsLoaded || this.props.user.loading) {
       return (
