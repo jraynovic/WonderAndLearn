@@ -1,9 +1,3 @@
-// title with marginTop
-
-//button to add question
-// need kid id, parent id, and specific challenge and challenge id to add questions too.
-//pass selected kid through redux perops and grab challenge id through params?
-// list of questions added
 import React, { Component } from "react";
 import {
   TouchableOpacity,
@@ -24,14 +18,10 @@ import * as Font from "expo-font";
 import { Icon } from "react-native-elements";
 
 const mapDispatchToProps = {
-  // signUp:(user)=> signUp(user),
-  // logIn:(user)=>logIn(user),
-  // logInFailed:(err)=>logInFailed(err)
   deleteQuestionKid: (user, kidId, challengeId, questionId, question) =>
     deleteQuestionKid(user, kidId, challengeId, questionId, question),
 };
 
-//deleteQuestionKid = (userId, kidId,challengeId,questionId,question,user)
 const mapStateToProps = (state) => {
   return {
     user: state.user,
@@ -89,24 +79,7 @@ class ParentQuestionComponent extends Component {
     this.setState({ stagedQuestion: question });
   };
 
-  handleDebug = () => {
-    const questions = this.props.user.parent.kids
-      .filter((kid) => kid._id === this.props.user.selectedKid._id)[0]
-      .categories.filter(
-        (category) =>
-          category.name === this.props.navigation.state.params.challenge.name
-      )[0].questions;
-    alert(
-      JSON.stringify(
-        this.props.user.parent.kids.filter(
-          (kid) => kid._id === this.props.user.selectedKid._id
-        )[0]
-      )
-    );
-  };
-
   handleEdit = (question) => {
-    // alert(JSON.stringify(question))
     const questionDetails = {
       kidId: this.props.user.parent.kids.filter(
         (kid) => kid._id === this.props.user.selectedKid._id
@@ -146,7 +119,7 @@ class ParentQuestionComponent extends Component {
                 <View style={styles.centered}>
                   <Text
                     style={styles.questionText}
-                  >{`    ${question.question}`}</Text>
+                  >{`   ${question.question}`}</Text>
                 </View>
               </View>
             </View>
@@ -154,31 +127,23 @@ class ParentQuestionComponent extends Component {
         );
       });
     }
+
     return (
       <View>
-        <Text>NOT WORKING</Text>
+        <Text>NO QUESTIONS AVAILABLE</Text>
       </View>
     );
   };
 
   render() {
-    if (!this.state.fontsLoaded) {
+    if (!this.state.fontsLoaded || this.props.user.loading) {
       return (
-        <View>
-          <Text>Loading</Text>
-        </View>
-      );
-    }
-    const { navigate } = this.props.navigation;
-    if (this.props.user.loading) {
-      return (
-        <View style={styles.main}>
+        <View style={styles.loading}>
           <ActivityIndicator size="large" color="#ed553b" />
         </View>
       );
     }
 
-    //onPress={()=>alert(JSON.stringify(this.props.navigation.state.params.challenge))}
     return (
       <View style={styles.main}>
         {Platform.OS === "ios" ? (
@@ -210,7 +175,6 @@ class ParentQuestionComponent extends Component {
         >
           {this.renderQuestions()}
         </ScrollView>
-        {/* <Text>{JSON.stringify(this.props.user.selectedKid)}</Text> */}
         <View>
           <Modal
             animationType="slide"
@@ -273,6 +237,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
   },
+  loading: {
+    backgroundColor: "#f6d55c",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   title: {
     fontFamily: "Dosis",
     color: "#ed553b",
@@ -284,30 +254,6 @@ const styles = StyleSheet.create({
     fontFamily: "Dosis",
     color: "#fff",
     fontSize: 16,
-  },
-  errMess: {
-    fontFamily: "Dosis",
-    color: "#ed553b",
-    marginTop: 10,
-    fontSize: 24,
-  },
-  fieldBackground: {
-    width: "60%",
-    marginTop: 15,
-    backgroundColor: "rgba(255, 255, 255, 0.51)",
-    opacity: 1,
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.51)",
-    borderRadius: 50,
-    color: "red",
-  },
-  fields: {
-    padding: 5,
-    opacity: 1,
-    fontFamily: "Dosis",
-    color: "#ed553b",
-    fontSize: 16,
-    marginLeft: 10,
   },
   button: {
     width: 225,
@@ -333,11 +279,6 @@ const styles = StyleSheet.create({
     shadowColor: "black",
     shadowOpacity: 0.5,
     alignItems: "center",
-  },
-  logInButtonText: {
-    fontFamily: "Dosis",
-    color: "#fff",
-    fontSize: 16,
   },
   row: {
     flexDirection: "row",
@@ -378,7 +319,6 @@ const styles = StyleSheet.create({
   modalButtons: {
     flexDirection: "row",
     flex: 1,
-    // justifyContent:'space-around'
   },
   modalView: {
     marginHorizontal: 30,

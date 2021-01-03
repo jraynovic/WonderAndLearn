@@ -170,13 +170,15 @@ class ParentDashboardComponent extends Component {
   };
 
   render() {
-    if (!this.state.fontsLoaded) {
+
+    if (!this.state.fontsLoaded ||this.props.user.loading) {
       return (
-        <View>
-          <Text>Loading</Text>
+        <View style={styles.loading}>
+          <ActivityIndicator size="large" color="#ed553b" />
         </View>
       );
     }
+
     return (
       <View style={styles.main}>
         {Platform.OS === "ios" ? (
@@ -193,7 +195,6 @@ class ParentDashboardComponent extends Component {
           <Text style={styles.title}>PARENT DASHBOARD</Text>
         </View>
         <View style={styles.profiles}>
-          <View style={{ height: 150 }}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               <TouchableOpacity
                 style={styles.centered}
@@ -204,9 +205,7 @@ class ParentDashboardComponent extends Component {
               </TouchableOpacity>
               {this.RenderKids()}
             </ScrollView>
-          </View>
         </View>
-
         <View style={styles.centered}>
           <View>
             {this.props.user.selectedKid ? (
@@ -216,7 +215,7 @@ class ParentDashboardComponent extends Component {
                 navigate={() => this.handleNavigation()}
               />
             ) : (
-              <View> </View>
+              <View/> 
             )}
           </View>
         </View>
@@ -229,11 +228,11 @@ class ParentDashboardComponent extends Component {
               Alert.alert("Modal has been closed.");
             }}
           >
-            {/* <KeyboardAvoidingView
+            <KeyboardAvoidingView
               style={{ flex: 1, marginBottom: 10 }}
               behavior="padding"
               keyboardVerticalOffset="0"
-            > */}
+            >
               <ScrollView>
                 <View style={styles.modalView}>
                   <Text
@@ -330,23 +329,23 @@ class ParentDashboardComponent extends Component {
                   </View>
                   <View style={styles.modalButtons}>
                     <TouchableOpacity
-                      style={styles.logInButton}
+                      style={styles.button}
                       onPress={() =>
                         this.setModalVisible(!this.state.modalVisible)
                       }
                     >
-                      <Text style={styles.logInButtonText}>CANCEL</Text>
+                      <Text style={styles.buttonText}>CANCEL</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      style={styles.logInButton}
+                      style={styles.button}
                       onPress={() => this.submitNewKid()}
                     >
-                      <Text style={styles.logInButtonText}>SAVE</Text>
+                      <Text style={styles.buttonText}>SAVE</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
               </ScrollView>
-            {/* </KeyboardAvoidingView> */}
+              </KeyboardAvoidingView>
           </Modal>
         </View>
       </View>
@@ -357,12 +356,20 @@ const styles = StyleSheet.create({
   main: {
     backgroundColor: "#f6d55c",
     flex: 1,
-    // alignItems:'center',
     justifyContent: "flex-start",
+  },
+  loading: {
+    backgroundColor: "#f6d55c",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   centered: {
     alignItems: "center",
     justifyContent: "center",
+  },
+  profiles:{
+    height:150
   },
   scrollViewContainer: {
     height: 200,
@@ -400,7 +407,6 @@ const styles = StyleSheet.create({
     fontFamily: "Dosis",
     color: "#ed553b",
     fontSize: 24,
-    // marginBottom:250
     marginBottom: 50,
   },
   image: {
@@ -415,7 +421,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     opacity: 0.5,
   },
-
   profileText: {
     fontFamily: "Dosis",
     color: "#ed553b",
@@ -427,7 +432,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "space-around",
   },
-  logInButton: {
+  button: {
     marginTop: 40,
     backgroundColor: "#ed553b",
     color: "#fff",
@@ -437,35 +442,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: 10,
   },
-  logInButtonText: {
+  buttonText: {
     fontFamily: "Dosis",
     color: "#fff",
     fontSize: 16,
     paddingHorizontal: 10,
-  },
-  forParentsButton: {
-    width: 175,
-    marginBottom: 25,
-    backgroundColor: "#ed553b",
-    color: "#fff",
-    borderRadius: 50,
-    padding: 5,
-    shadowOffset: { width: -5, height: 5 },
-    shadowColor: "black",
-    shadowOpacity: 0.5,
-    alignItems: "center",
-  },
-  forParentsButtonText: {
-    fontFamily: "Dosis",
-    color: "#fff",
-    fontSize: 16,
-  },
-  footer: {
-    fontFamily: "Dosis",
-    color: "#ed553b",
-    fontSize: 16,
-    marginTop: 200,
-    marginLeft: 8,
   },
   modalX: {
     fontSize: 40,
