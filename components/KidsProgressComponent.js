@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import {
-  TouchableOpacity,
   Text,
   View,
   StyleSheet,
@@ -8,7 +7,6 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
-import { signUp, logIn, logInFailed } from "../redux/ActionCreators";
 import KidsMenuComponent from "./KidsMenuComponent";
 import { connect } from "react-redux";
 import * as Font from "expo-font";
@@ -17,12 +15,6 @@ import HistoryIcon from "../assets/HistoryIcon.png";
 import MathIcon from "../assets/MathIcon.png";
 import ReadingIcon from "../assets/ReadingIcon.png";
 import ScienceIcon from "../assets/ScienceIcon.png";
-
-const mapDispatchToProps = {
-  signUp: (user) => signUp(user),
-  logIn: (user) => logIn(user),
-  logInFailed: (err) => logInFailed(err),
-};
 
 const mapStateToProps = (state) => {
   return {
@@ -138,45 +130,36 @@ class KidsProgressComponent extends Component {
     });
   };
   render() {
-    if (!this.state.fontsLoaded) {
+    if (!this.state.fontsLoaded || this.props.user.loading) {
       return (
-        <View>
-          <Text>Loading</Text>
-        </View>
-      );
-    }
-    // const { navigate } = this.props.navigation;
-    if (this.props.user.loading) {
-      return (
-        <View style={styles.main}>
+        <View style={styles.loading}>
           <ActivityIndicator size="large" color="#ed553b" />
         </View>
       );
     }
+
     return (
       <View style={styles.main}>
-        <ScrollView showsVerticalScrollIndicator={false} >
+        <ScrollView showsVerticalScrollIndicator={false}>
           <Text style={styles.title}>WONDER + LEARN</Text>
           <Text style={styles.subTitle}>PROGRESS</Text>
-          <View style={{ height: 210}}>
+          <View style={styles.progressCardView}>
             <ScrollView
               style={styles.progressCards}
               horizontal={true}
               showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{paddingHorizontal:10}}
-        
+              contentContainerStyle={{ paddingHorizontal: 10 }}
             >
               {this.renderProgressCards()}
             </ScrollView>
           </View>
 
           <Text style={styles.subTitle}>POINTS EARNED</Text>
-          <View style={{ flex: 1, height: 200 }}>
+          <View style={styles.pointsView}>
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
-              style={{ width: "100%" }}
-              
+              style={styles.pointsScrollView}
             >
               <View style={styles.points}>{this.renderPointsEarned()}</View>
             </ScrollView>
@@ -201,6 +184,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-start",
   },
+  loading: {
+    backgroundColor: "#f6d55c",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   title: {
     textAlign: "center",
     fontFamily: "Dosis",
@@ -218,7 +207,9 @@ const styles = StyleSheet.create({
   },
   progressCards: {
     marginLeft: 10,
-  
+  },
+  progressCardView: {
+    height: 210,
   },
   progressCard: {
     backgroundColor: "#fce9a2",
@@ -249,6 +240,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginLeft: 40,
   },
+  pointsView: {
+    flex: 1,
+    height: 200,
+  },
+  pointsScrollView: {
+    width: "100%",
+  },
   pointBar: {
     width: 25,
     backgroundColor: "#fce9a2",
@@ -270,7 +268,4 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
 });
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(KidsProgressComponent);
+export default connect(mapStateToProps)(KidsProgressComponent);
