@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
   },
   categoryRow: {
     flexDirection: "row",
-    height: 130,
+    height: 140,
     margin: 7,
     justifyContent: "center",
   },
@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
   },
   categoryItem: {
     backgroundColor: "#fce9a2",
-    height: 130,
+    height: 140,
     width: 130,
     borderRadius: 15,
     justifyContent: "center",

@@ -16,27 +16,18 @@ import KidsProgressComponent from "./KidsProgressComponent";
 import KidsBadgesComponent from "./KidsBadgesComponent";
 import { connect } from "react-redux";
 import {
-  fetchQuestions,
-  fetchCategories,
-  postCategory,
-  postNewCategory,
-  fetchQuestionsByCategory,
-  fetchUsers,
+  logIn,
   signUp,
 } from "../redux/ActionCreators";
 import KidsHomePageComponent from "./KidsHomePageComponent";
 
-const mapDispatchToProps = {
-  fetchQuestions,
-  fetchCategories,
-  postCategory: (id, category) => postCategory(id, category),
-  fetchQuestionsByCategory: (category) => fetchQuestionsByCategory(category),
-  postNewCategory: (category) => postNewCategory(category),
-  fetchUsers: () => fetchUsers(),
-  postUser: (user) => postUser(user),
-  signUp: (user) => signUp(user),
-  logIn: (user) => logIn(user),
-};
+// const mapDispatchToProps = {
+//   // postNewCategory: (category) => postNewCategory(category),
+//   // fetchUsers: () => fetchUsers(),
+//   // postUser: (user) => postUser(user),
+//   signUp: (user) => signUp(user),
+//   logIn: (user) => logIn(user),
+// };
 
 const HomeNavigator = createStackNavigator(
   {
@@ -71,4 +62,4 @@ class MainComponent extends Component {
   }
 }
 
-export default connect(null, mapDispatchToProps)(MainComponent);
+export default connect(null)(MainComponent);
