@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-//import { Text, View } from "react-native";
 import { createStackNavigator } from "react-navigation";
+import { connect } from "react-redux";
 import SignUpComponent from "./SignUpComponent";
 import LogInComponent from "./LogInComponent";
 import ProfileComponent from "./ProfileComponent";
@@ -14,29 +14,7 @@ import ChallengeComponent from "./ChallengeComponent"; //used
 import QuestionComponent from "./QuestionsComponent";
 import KidsProgressComponent from "./KidsProgressComponent";
 import KidsBadgesComponent from "./KidsBadgesComponent";
-import { connect } from "react-redux";
-import {
-  fetchQuestions,
-  fetchCategories,
-  postCategory,
-  postNewCategory,
-  fetchQuestionsByCategory,
-  fetchUsers,
-  signUp,
-} from "../redux/ActionCreators";
 import KidsHomePageComponent from "./KidsHomePageComponent";
-
-const mapDispatchToProps = {
-  fetchQuestions,
-  fetchCategories,
-  postCategory: (id, category) => postCategory(id, category),
-  fetchQuestionsByCategory: (category) => fetchQuestionsByCategory(category),
-  postNewCategory: (category) => postNewCategory(category),
-  fetchUsers: () => fetchUsers(),
-  postUser: (user) => postUser(user),
-  signUp: (user) => signUp(user),
-  logIn: (user) => logIn(user),
-};
 
 const HomeNavigator = createStackNavigator(
   {
@@ -71,4 +49,4 @@ class MainComponent extends Component {
   }
 }
 
-export default connect(null, mapDispatchToProps)(MainComponent);
+export default connect(null)(MainComponent);

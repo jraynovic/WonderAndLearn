@@ -4,11 +4,11 @@ export const user =(state={parent :{},kids:[] ,token:'',pin:0,errMess:null, load
 
     switch (action.type){
 
-        case ActionTypes.ADD_USERS:
-            return{...state,errMess: null, users:action.payload}
+        // case ActionTypes.ADD_USERS:
+        //     return{...state,errMess: null, users:action.payload}
         
-        case ActionTypes.ADD_USER:
-            return {...state, errMess: null,users: state.users.concat(action.payload)}
+        // case ActionTypes.ADD_USER:
+        //     return {...state, errMess: null,users: state.users.concat(action.payload)}
 
         case ActionTypes.SET_PARENT:
             const user = action.payload;

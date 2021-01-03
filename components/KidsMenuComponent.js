@@ -2,16 +2,9 @@ import React, { useState, useEffect } from "react";
 import {
   TouchableOpacity,
   Text,
-  TextInput,
   View,
   StyleSheet,
   Image,
-  KeyboardAvoidingView,
-  ScrollView,
-  SafeAreaView,
-  FlatList,
-  ActivityIndicator,
-  Alert,
 } from "react-native";
 import * as Font from "expo-font";
 import HomeIcon from "../assets/HomeIcon.png";
@@ -29,9 +22,11 @@ const KidsMenuComponent = (props) => {
     await Font.loadAsync(this.customFonts);
     setFont(true);
   };
+
   useEffect(() => {
     _loadFontsAsync();
   });
+
   if (!fontsLoaded) {
     return (
       <View style={styles.main}>
@@ -39,6 +34,7 @@ const KidsMenuComponent = (props) => {
       </View>
     );
   }
+  
   return (
     <View style={styles.main}>
       <View style={styles.menuRow}>

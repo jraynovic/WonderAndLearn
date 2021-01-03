@@ -6,9 +6,7 @@ import {
   View,
   StyleSheet,
   Image,
-  KeyboardAvoidingView,
   ScrollView,
-  SafeAreaView,
   Keyboard,
   ActivityIndicator,
   Modal,
@@ -16,14 +14,11 @@ import {
 import { signUp, logIn, setSelectedKid } from "../redux/ActionCreators";
 import { connect } from "react-redux";
 import * as Font from "expo-font";
-import { Input } from "react-native-elements";
-import newUser from "../assets/NewUser.png";
 import rainbow from "../assets/rainbowHills.png";
 import cat from "../assets/Cat.png";
 import dinosaur from "../assets/Dinosaur.png";
 import dog from "../assets/Dog.png";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const mapDispatchToProps = {
   signUp: (user) => signUp(user),
@@ -51,7 +46,6 @@ class ProfileComponent extends Component {
 
   customFonts = {
     Dosis: require("../assets/fonts/Dosis-Bold.ttf"),
-    //'Inter-Black': require('./assets/fonts/Inter-Black.otf'),
   };
 
   async _loadFontsAsync() {
@@ -96,7 +90,7 @@ class ProfileComponent extends Component {
   };
 
   RenderKids = () => {
-    if (this.props.user.kids.length !==0) {
+    if (this.props.user.kids.length !== 0) {
       return (
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {this.props.user.kids.map((kid) => {
@@ -113,47 +107,34 @@ class ProfileComponent extends Component {
               </TouchableOpacity>
             );
           })}
-          
         </ScrollView>
-      );
-    } else {
-      return (
-        <View style={styles.centered}>
-          <Text style={styles.noKids}>{`USE THE \nFOR PARENTS \nBUTTON TO \nADD NEW KIDS`}</Text>
-        </View>
-        // <TouchableOpacity
-        //  style={{marginLeft:10}}
-        //   onPress={() => this.setModalVisible(!this.state.modalVisible)}
-        // >
-        //   <Image source={newUser} style={styles.image} />
-        // </TouchableOpacity>
       );
     }
   };
 
   render() {
-    if (!this.state.fontsLoaded) {
+    if (!this.state.fontsLoaded || this.props.user.loading) {
       return (
-        <View>
-          <Text>Loading</Text>
+        <View style={styles.loading}>
+          <ActivityIndicator size="large" color="#ed553b" />
         </View>
       );
     }
+
     return (
       <View style={styles.main}>
         <View style={styles.centered}>
           <Text style={styles.title}>WONDER + LEARN</Text>
         </View>
-        {this.props.user.kids.length !==0? 
-        <View style={styles.profiles}>
-        {this.RenderKids()}
-      </View>:
-      <View style={styles.centered}>
-      <Text style={styles.noKids}>{`USE THE \nFOR PARENTS \nBUTTON TO \nADD AND \nMANAGE KIDS`}</Text>
-    </View>
-      }
-        
-
+        {this.props.user.kids.length !== 0 ? (
+          <View style={styles.profiles}>{this.RenderKids()}</View>
+        ) : (
+          <View style={styles.centered}>
+            <Text
+              style={styles.noKids}
+            >{`USE THE \nFOR PARENTS \nBUTTON TO \nADD AND \nMANAGE KIDS `}</Text>
+          </View>
+        )}
         <View style={styles.centered}>
           <TouchableOpacity
             style={styles.forParentsButton}
@@ -175,84 +156,85 @@ class ProfileComponent extends Component {
             Alert.alert("Modal has been closed.");
           }}
         >
-          <KeyboardAwareScrollView  style={styles.main} 
-              style={{ backgroundColor: '#f6d55c' }}
-              resetScrollToCoords={{ x: 0, y: 0 }}
-              contentContainerStyle={styles.main}
-              scrollEnabled={true}
-            >
-          <View style={styles.modalView}>
-            <Text
-              style={styles.modalX}
-              onPress={() => this.setModalVisible(!this.state.modalVisible)}
-            >
-              x
-            </Text>
-            <Text style={styles.modalTitle}>ENTER PIN TO CONTINUE </Text>
-            <View style={styles.pinContainer}>
-              <View style={styles.pinBox}>
-                <TextInput
-                  autoFocus={true}
-                  secureTextEntry
-                  keyboardType="numeric"
-                  placeholderTextColor="#ed553b"
-                  style={styles.fields}
-                  onChangeText={(e) => {
-                    this.setState({ one: e });
-                    this.twoRef.focus();
-                  }}
-                />
+          <KeyboardAwareScrollView
+            style={styles.main}
+            style={{ backgroundColor: "#f6d55c" }}
+            resetScrollToCoords={{ x: 0, y: 0 }}
+            contentContainerStyle={styles.main}
+            scrollEnabled={true}
+          >
+            <View style={styles.modalView}>
+              <Text
+                style={styles.modalX}
+                onPress={() => this.setModalVisible(!this.state.modalVisible)}
+              >
+                x
+              </Text>
+              <Text style={styles.modalTitle}>ENTER PIN TO CONTINUE </Text>
+              <View style={styles.pinContainer}>
+                <View style={styles.pinBox}>
+                  <TextInput
+                    autoFocus={true}
+                    secureTextEntry
+                    keyboardType="numeric"
+                    placeholderTextColor="#ed553b"
+                    style={styles.fields}
+                    onChangeText={(e) => {
+                      this.setState({ one: e });
+                      this.twoRef.focus();
+                    }}
+                  />
+                </View>
+                <View style={styles.pinBox}>
+                  <TextInput
+                    secureTextEntry
+                    keyboardType="numeric"
+                    ref={(ref) => (this.twoRef = ref)}
+                    placeholderTextColor="#ed553b"
+                    style={styles.fields}
+                    onChangeText={(e) => {
+                      this.setState({ two: e });
+                      this.threeRef.focus();
+                    }}
+                  />
+                </View>
+                <View style={styles.pinBox}>
+                  <TextInput
+                    secureTextEntry
+                    keyboardType="numeric"
+                    ref={(ref) => (this.threeRef = ref)}
+                    placeholderTextColor="#ed553b"
+                    style={styles.fields}
+                    onChangeText={(e) => {
+                      this.setState({ three: e });
+                      this.fourRef.focus();
+                    }}
+                  />
+                </View>
+                <View style={styles.pinBox}>
+                  <TextInput
+                    secureTextEntry
+                    keyboardType="numeric"
+                    ref={(ref) => (this.fourRef = ref)}
+                    placeholderTextColor="#ed553b"
+                    style={styles.fields}
+                    onChangeText={(e) => {
+                      this.setState({ four: e });
+                      Keyboard.dismiss();
+                    }}
+                  />
+                </View>
               </View>
-              <View style={styles.pinBox}>
-                <TextInput
-                  secureTextEntry
-                  keyboardType="numeric"
-                  ref={(ref) => (this.twoRef = ref)}
-                  placeholderTextColor="#ed553b"
-                  style={styles.fields}
-                  onChangeText={(e) => {
-                    this.setState({ two: e });
-                    this.threeRef.focus();
-                  }}
-                />
+              <View>
+                <Text style={styles.errMessage}>{this.state.pinError}</Text>
               </View>
-              <View style={styles.pinBox}>
-                <TextInput
-                  secureTextEntry
-                  keyboardType="numeric"
-                  ref={(ref) => (this.threeRef = ref)}
-                  placeholderTextColor="#ed553b"
-                  style={styles.fields}
-                  onChangeText={(e) => {
-                    this.setState({ three: e });
-                    this.fourRef.focus();
-                  }}
-                />
-              </View>
-              <View style={styles.pinBox}>
-                <TextInput
-                  secureTextEntry
-                  keyboardType="numeric"
-                  ref={(ref) => (this.fourRef = ref)}
-                  placeholderTextColor="#ed553b"
-                  style={styles.fields}
-                  onChangeText={(e) => {
-                    this.setState({ four: e });
-                    Keyboard.dismiss();
-                  }}
-                />
-              </View>
+              <TouchableOpacity
+                style={styles.forParentsButton}
+                onPress={() => this.verifyPin()}
+              >
+                <Text style={styles.forParentsButtonText}>ENTER</Text>
+              </TouchableOpacity>
             </View>
-            <View>
-              <Text style={styles.errMessage}>{this.state.pinError}</Text>
-            </View>
-            <TouchableOpacity
-              style={styles.forParentsButton}
-              onPress={() => this.verifyPin()}
-            >
-              <Text style={styles.forParentsButtonText}>ENTER</Text>
-            </TouchableOpacity>
-          </View>
           </KeyboardAwareScrollView>
         </Modal>
       </View>
@@ -263,8 +245,13 @@ const styles = StyleSheet.create({
   main: {
     backgroundColor: "#f6d55c",
     flex: 1,
-    // alignItems:'center',
     justifyContent: "flex-start",
+  },
+  loading: {
+    backgroundColor: "#f6d55c",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   centered: {
     alignItems: "center",
@@ -280,10 +267,10 @@ const styles = StyleSheet.create({
   noKids: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    marginTop:0,
+    marginTop: 0,
     marginBottom: 150,
     fontSize: 40,
-    textAlign:'center'
+    textAlign: "center",
   },
   kidText: {
     fontFamily: "Dosis",
@@ -294,21 +281,11 @@ const styles = StyleSheet.create({
   kidsProfile: {
     marginHorizontal: 10,
   },
-  fieldBackground: {
-    width: "60%",
-    marginTop: 15,
-    backgroundColor: "rgba(255, 255, 255, 0.51)",
-    opacity: 1,
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.51)",
-    borderRadius: 50,
-    color: "red",
-  },
   fields: {
     fontFamily: "Dosis",
     color: "#ed553b",
     fontSize: 40,
-    textAlign:'center'
+    textAlign: "center",
   },
   errMessage: {
     fontFamily: "Dosis",
@@ -356,19 +333,11 @@ const styles = StyleSheet.create({
     shadowColor: "black",
     shadowOpacity: 0.5,
     alignItems: "center",
-    
   },
   forParentsButtonText: {
     fontFamily: "Dosis",
     color: "#fff",
     fontSize: 16,
-  },
-  footer: {
-    fontFamily: "Dosis",
-    color: "#ed553b",
-    fontSize: 16,
-    marginTop: 200,
-    marginLeft: 8,
   },
   modalX: {
     fontSize: 40,
@@ -377,7 +346,6 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 30,
-    // marginTop: 170,
     backgroundColor: "#fff",
     borderRadius: 20,
     padding: 35,

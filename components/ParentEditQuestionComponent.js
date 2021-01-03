@@ -7,10 +7,7 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   ScrollView,
-  SafeAreaView,
-  FlatList,
   ActivityIndicator,
-  Alert,
 } from "react-native";
 import { editQuestionKid } from "../redux/ActionCreators";
 import { connect } from "react-redux";
@@ -28,7 +25,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-class LogInComponent extends Component {
+class ParentEditQuestionComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -92,21 +89,15 @@ class LogInComponent extends Component {
   };
 
   render() {
-    if (!this.state.fontsLoaded) {
+
+    if (!this.state.fontsLoaded || this.props.user.loading) {
       return (
-        <View>
-          <Text>Loading</Text>
-        </View>
-      );
-    }
-    const { navigate } = this.props.navigation;
-    if (this.props.user.loading) {
-      return (
-        <View style={styles.main}>
+        <View style={styles.loading}>
           <ActivityIndicator size="large" color="#ed553b" />
         </View>
       );
     }
+
     return (
       <View style={styles.main}>
         {Platform.OS === "ios" ? (
@@ -211,6 +202,12 @@ const styles = StyleSheet.create({
 
     justifyContent: "flex-start",
   },
+  loading: {
+    backgroundColor: "#f6d55c",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   title: {
     fontFamily: "Dosis",
     color: "#ed553b",
@@ -229,17 +226,10 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 24,
   },
-  errMess: {
-    fontFamily: "Dosis",
-    color: "#ed553b",
-    marginTop: 10,
-    fontSize: 24,
-  },
   buttonRow: {
     flexDirection: "row",
     justifyContent: "space-evenly",
     alignItems: "center",
-    // alignItems:'flex-start'
   },
   fieldBackground: {
     width: "80%",
@@ -285,13 +275,6 @@ const styles = StyleSheet.create({
     fontFamily: "Dosis",
     color: "#fff",
     fontSize: 16,
-  },
-  footer: {
-    fontFamily: "Dosis",
-    color: "#ed553b",
-    fontSize: 16,
-    marginTop: 200,
-    marginLeft: 8,
-  },
+  }
 });
-export default connect(mapStateToProps, mapDispatchToProps)(LogInComponent);
+export default connect(mapStateToProps, mapDispatchToProps)(ParentEditQuestionComponent);

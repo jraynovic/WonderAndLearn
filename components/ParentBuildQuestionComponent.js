@@ -7,12 +7,9 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   ScrollView,
-  SafeAreaView,
-  FlatList,
   ActivityIndicator,
-  Alert,
 } from "react-native";
-import { addNewQuestion, addNewQuestionKid } from "../redux/ActionCreators";
+import { addNewQuestionKid } from "../redux/ActionCreators";
 import { connect } from "react-redux";
 import * as Font from "expo-font";
 import { Icon } from "react-native-elements";
@@ -28,7 +25,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-class LogInComponent extends Component {
+class ParentBuildQuestionComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -80,17 +77,10 @@ class LogInComponent extends Component {
   };
 
   render() {
-    if (!this.state.fontsLoaded) {
+   
+    if (!this.state.fontsLoaded ||this.props.user.loading) {
       return (
-        <View>
-          <Text>Loading</Text>
-        </View>
-      );
-    }
-    const { navigate } = this.props.navigation;
-    if (this.props.user.loading) {
-      return (
-        <View style={styles.main}>
+        <View style={styles.loading}>
           <ActivityIndicator size="large" color="#ed553b" />
         </View>
       );
@@ -112,7 +102,7 @@ class LogInComponent extends Component {
             {this.props.navigation.state.params.category.name.toUpperCase()}
           </Text>
           <KeyboardAvoidingView
-            style={{ flex: 1, marginBottom: 10 }}
+            style={styles.questionView}
             behavior="padding"
             keyboardVerticalOffset="0"
           >
@@ -191,8 +181,13 @@ const styles = StyleSheet.create({
   main: {
     backgroundColor: "#f6d55c",
     flex: 1,
-
     justifyContent: "flex-start",
+  },
+  loading: {
+    backgroundColor: "#f6d55c",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: {
     fontFamily: "Dosis",
@@ -201,6 +196,10 @@ const styles = StyleSheet.create({
     marginBottom: 60,
     fontSize: 40,
     textAlign: "center",
+  },
+  questionView:{ 
+    flex: 1, 
+    marginBottom: 10
   },
   textBoxTitle: {
     justifyContent: "flex-start",
@@ -222,7 +221,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-evenly",
     alignItems: "center",
-    // alignItems:'flex-start'
   },
   fieldBackground: {
     width: "80%",
@@ -268,13 +266,6 @@ const styles = StyleSheet.create({
     fontFamily: "Dosis",
     color: "#fff",
     fontSize: 16,
-  },
-  footer: {
-    fontFamily: "Dosis",
-    color: "#ed553b",
-    fontSize: 16,
-    marginTop: 200,
-    marginLeft: 8,
-  },
+  }
 });
-export default connect(mapStateToProps, mapDispatchToProps)(LogInComponent);
+export default connect(mapStateToProps, mapDispatchToProps)(ParentBuildQuestionComponent);

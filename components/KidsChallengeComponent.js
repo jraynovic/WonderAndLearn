@@ -2,32 +2,19 @@ import React, { Component } from "react";
 import {
   TouchableOpacity,
   Text,
-  TextInput,
   View,
-  FlatList,
   StyleSheet,
-  KeyboardAvoidingView,
   ScrollView,
-  SafeAreaView,
   Image,
   ActivityIndicator,
-  Alert,
 } from "react-native";
-import { signUp, logIn, logInFailed } from "../redux/ActionCreators";
 import { connect } from "react-redux";
 import * as Font from "expo-font";
-import Learning from "../assets/Learning.png";
 import KidsMenuComponent from "./KidsMenuComponent";
 import HistoryIcon from "../assets/HistoryIcon.png";
 import MathIcon from "../assets/MathIcon.png";
 import ReadingIcon from "../assets/ReadingIcon.png";
 import ScienceIcon from "../assets/ScienceIcon.png";
-
-const mapDispatchToProps = {
-  signUp: (user) => signUp(user),
-  logIn: (user) => logIn(user),
-  logInFailed: (err) => logInFailed(err),
-};
 
 const mapStateToProps = (state) => {
   return {
@@ -35,7 +22,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-class LogInComponent extends Component {
+class KidsChallengeComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -74,6 +61,7 @@ class LogInComponent extends Component {
   changeScreen = (screen) => {
     this.props.navigation.navigate(screen);
   };
+
   renderSmallChallenge = (category) => {
     const answered = category.questions.filter(
       (question) => question.answered === true
@@ -100,7 +88,6 @@ class LogInComponent extends Component {
             </View>
             <View>
               {this.RenderImage(category.image)}
-              {/* <Image source={Learning} style={styles.image} /> */}
             </View>
           </View>
         </TouchableOpacity>
@@ -110,11 +97,9 @@ class LogInComponent extends Component {
 
   renderChallenges = () => {
     if (this.props.user.selectedKid.categories.length > 0) {
-      //Sort categories
       const categories = this.props.user.selectedKid.categories.sort((a, b) =>
         a.lastAccessed < b.lastAccessed ? 1 : -1
       );
-      //categories.sort((a, b) => (a.lastAccessed > b.lastAccessed) ? 1 : -1)
       const lastAccessed = categories[0];
       const totalAnswered = lastAccessed.questions.filter(
         (question) => question.answered === true
@@ -211,7 +196,6 @@ class LogInComponent extends Component {
 
       return (
         <ScrollView
-          style={styles.scrollView}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
         >
@@ -240,8 +224,6 @@ class LogInComponent extends Component {
               </View>
             </View>
           </TouchableOpacity>
-          {/* <FlatList keyExtractor={item=> item} data={remaining} renderItem={({item})=> <View><Text>{item.name}</Text></View>}/>
-                    <FlatList data={notLast} renderItem={({item})=>this.renderSmallChallenge(item)} numColumns={2} /> */}
           <View style={styles.categoryRow}>
             <View>{renderColumnOne}</View>
             <View>{renderColumnTwo}</View>
@@ -258,25 +240,18 @@ class LogInComponent extends Component {
   };
 
   render() {
-    if (!this.state.fontsLoaded) {
+
+    if (!this.state.fontsLoaded || this.props.user.loading) {
       return (
-        <View>
-          <Text>Loading</Text>
-        </View>
-      );
-    }
-    const { navigate } = this.props.navigation;
-    if (this.props.user.loading) {
-      return (
-        <View style={styles.main}>
+        <View style={styles.loading}>
           <ActivityIndicator size="large" color="#ed553b" />
         </View>
       );
     }
+
     return (
       <View style={styles.main}>
         <Text style={styles.title}>WONDER + LEARN</Text>
-        {/* <Text style={styles.title}>{this.props.user.selectedKid.name}</Text> */}
         {this.renderChallenges()}
         <View style={styles.menu}>
           <KidsMenuComponent
@@ -297,6 +272,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-start",
+  },
+  loading: {
+    backgroundColor: "#f6d55c",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: {
     fontFamily: "Dosis",
@@ -347,7 +328,7 @@ const styles = StyleSheet.create({
   },
   categoryRow: {
     flexDirection: "row",
-    height: 130,
+    height: 140,
     margin: 7,
     justifyContent: "center",
   },
@@ -357,7 +338,7 @@ const styles = StyleSheet.create({
   },
   categoryItem: {
     backgroundColor: "#fce9a2",
-    height: 130,
+    height: 140,
     width: 130,
     borderRadius: 15,
     justifyContent: "center",
@@ -380,62 +361,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 2,
   },
-  scrollView: {
-    // height:'50%'
-  },
-  errMess: {
-    fontFamily: "Dosis",
-    color: "#ed553b",
-    marginTop: 10,
-    fontSize: 24,
-  },
-  fieldBackground: {
-    width: "60%",
-    marginTop: 15,
-    backgroundColor: "rgba(255, 255, 255, 0.51)",
-    opacity: 1,
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.51)",
-    borderRadius: 50,
-    color: "red",
-  },
-  fields: {
-    padding: 5,
-    opacity: 1,
-    fontFamily: "Dosis",
-    color: "#ed553b",
-    fontSize: 16,
-    marginLeft: 10,
-  },
-  logInButton: {
-    width: 225,
-    marginTop: 40,
-    backgroundColor: "#ed553b",
-    color: "#fff",
-    borderRadius: 50,
-    padding: 5,
-    shadowOffset: { width: -5, height: 5 },
-    shadowColor: "black",
-    shadowOpacity: 0.5,
-    alignItems: "center",
-  },
-  logInButtonText: {
-    fontFamily: "Dosis",
-    color: "#fff",
-    fontSize: 16,
-  },
   menu: {
-    marginTop:5,
+    marginTop: 5,
     position: "absolute",
     bottom: 0,
     flexDirection: "row",
-  },
-  footer: {
-    fontFamily: "Dosis",
-    color: "#ed553b",
-    fontSize: 16,
-    marginTop: 200,
-    marginLeft: 8,
-  },
+  }
 });
-export default connect(mapStateToProps, mapDispatchToProps)(LogInComponent);
+export default connect(mapStateToProps)(KidsChallengeComponent);

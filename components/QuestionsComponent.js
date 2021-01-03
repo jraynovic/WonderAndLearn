@@ -2,17 +2,10 @@ import React, { Component } from "react";
 import {
   TouchableOpacity,
   Text,
-  TextInput,
   View,
   StyleSheet,
-  KeyboardAvoidingView,
-  ScrollView,
-  SafeAreaView,
-  FlatList,
   ActivityIndicator,
-  Alert,
 } from "react-native";
-import { signUp, logIn, logInFailed } from "../redux/ActionCreators";
 import { connect } from "react-redux";
 import * as Font from "expo-font";
 import KidsMenuComponent from "./KidsMenuComponent";
@@ -72,7 +65,6 @@ class QuestionComponent extends Component {
     const previouslyAnswered = this.props.navigation.state.params.category.questions.filter(
       (question) => question.answered === true
     );
-    // console.log(unansweredQuestions);
     this.setState({
       questions: unansweredQuestions,
       previouslyAnswered: previouslyAnswered.length,
@@ -93,20 +85,7 @@ class QuestionComponent extends Component {
   };
 
   RenderAnswers = () => {
-    //-----------------------------------------------------------------------------------
-    // const randomizeQuestions = (array) => {
-    //   let counter = array.length;
-
-    //   while (counter > 0) {
-    //     let index = Math.floor(Math.random() * counter);
-    //     counter--;
-    //     let temp = array[counter];
-    //     array[counter] = array[index];
-    //     array[index] = temp;
-    //   }
-    //   return array;
-    // };
-
+   
     const getStyle = (position) => {
       if (this.state[position] === true) {
         if (this.state.lastAnswer === "Correct") {
@@ -118,9 +97,6 @@ class QuestionComponent extends Component {
       return styles.answerButton;
     };
 
-    // const answers = randomizeQuestions(
-    //   this.state.questions[this.state.questionIndex].answers
-    // );
     if (!this.state.randomized) {
       const answers = this.randomizeQuestions(
         this.state.questions[this.state.questionIndex].answers
@@ -131,6 +107,7 @@ class QuestionComponent extends Component {
       });
     }
     const { answers } = this.state;
+
     return (
       <View style={styles.answerView}>
         <View>
@@ -165,7 +142,6 @@ class QuestionComponent extends Component {
             <Text style={styles.answerText}>{answers[3].answer}</Text>
           </TouchableOpacity>
         </View>
-        {/* {this.state.lastAnswer? <Text style={{marginTop:15}}>{`Last answer was ${this.state.lastAnswer}`}</Text>:null} */}
       </View>
     );
   };
@@ -246,6 +222,7 @@ class QuestionComponent extends Component {
         this.state.questions[this.state.questionIndex - 1]._id,
         { answered: true, answeredCorrect: answer.isCorrect }
       );
+
       this.props.updateLastAccessed(
         this.props.user,
         this.props.user.selectedKid._id,
@@ -255,26 +232,20 @@ class QuestionComponent extends Component {
       const kid = this.props.user.kids.filter(
         (kid) => kid._id === this.props.user.selectedKid._id
       )[0];
+
       this.props.setSelectedKid(kid);
     }, 2000);
   };
 
   render() {
-    if (!this.state.fontsLoaded) {
+    if (!this.state.fontsLoaded || this.props.user.loading) {
       return (
-        <View>
-          <Text>Loading</Text>
-        </View>
-      );
-    }
-    const { navigate } = this.props.navigation;
-    if (this.props.user.loading) {
-      return (
-        <View style={styles.main}>
+        <View style={styles.loading}>
           <ActivityIndicator size="large" color="#ed553b" />
         </View>
       );
     }
+
     if (this.props.navigation.state.params.category.questions.length < 1) {
       return (
         <View style={styles.main}>
@@ -292,6 +263,7 @@ class QuestionComponent extends Component {
         </View>
       );
     }
+
     return (
       <View style={styles.main}>
         <View>
@@ -308,7 +280,6 @@ class QuestionComponent extends Component {
         ) : (
           <Text>FINISHED</Text>
         )}
-
         <View style={styles.menu}>
           <KidsMenuComponent
             navProfile={() => this.props.navigation.navigate("Profile")}
@@ -327,6 +298,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#f6d55c",
     flex: 1,
     alignItems: "center",
+  },
+  loading: {
+    backgroundColor: "#f6d55c",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: {
     fontFamily: "Dosis",
@@ -355,22 +332,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 40,
     textAlign: "center",
-  },
-  errMess: {
-    fontFamily: "Dosis",
-    color: "#ed553b",
-    marginTop: 10,
-    fontSize: 24,
-  },
-  fieldBackground: {
-    width: "60%",
-    marginTop: 15,
-    backgroundColor: "rgba(255, 255, 255, 0.51)",
-    opacity: 1,
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.51)",
-    borderRadius: 50,
-    color: "red",
   },
   fields: {
     padding: 5,
@@ -462,13 +423,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     flexDirection: "row",
-  },
-  footer: {
-    fontFamily: "Dosis",
-    color: "#ed553b",
-    fontSize: 16,
-    marginTop: 200,
-    marginLeft: 8,
-  },
+  }
 });
 export default connect(mapStateToProps, mapDispatchToProps)(QuestionComponent);
