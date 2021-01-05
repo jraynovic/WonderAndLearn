@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   Alert,
   Image,
+  Dimensions,
 } from "react-native";
 import {
   addNewChallenge,
@@ -24,6 +25,8 @@ import HistoryIcon from "../assets/HistoryIcon.png";
 import MathIcon from "../assets/MathIcon.png";
 import ReadingIcon from "../assets/ReadingIcon.png";
 import ScienceIcon from "../assets/ScienceIcon.png";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { percentToSize, widthPercentToSize } from "../shared/sizeUtils";
 
 const mapDispatchToProps = {
   addNewChallenge: (user, kidId, category) =>
@@ -153,7 +156,6 @@ class ChallengeComponent extends Component {
   };
 
   render() {
-    
     if (!this.state.fontsLoaded || this.props.user.loading) {
       return (
         <View style={styles.loading}>
@@ -172,46 +174,17 @@ class ChallengeComponent extends Component {
             <Icon name="chevron-left" size="50" color="#ed553b" />
           </TouchableOpacity>
         ) : (
-          <View style={{ marginTop: 30 }} />
+          <View style={styles.notIOS} />
         )}
         <Text style={styles.title}>CHALLENGES</Text>
         <Text>{JSON.stringify(this.props.user.parent.kids.categories)}</Text>
-        {this.state.newSubjectInput ? (
-          <KeyboardAvoidingView>
-            <TouchableOpacity
-              style={styles.fieldBackground}
-              onPress={() => this.setState({ newSubjectInput: false })}
-            >
-              <TextInput
-                style={styles.fields}
-                placeholder="New Subject"
-                placeholderTextColor="#ed553b"
-                autoFocus
-                value={this.state.newSubject}
-                onChangeText={(e) => this.setState({ newSubject: e })}
-              />
-            </TouchableOpacity>
-            <View style={styles.row}>
-              <TouchableOpacity
-                style={styles.greenButton}
-                onPress={() => this.handleNewSubject()}
-              ></TouchableOpacity>
-              <TouchableOpacity
-                style={styles.redButton}
-                onPress={() => this.setState({ newSubjectInput: false })}
-              >
-                <Text style={styles.buttonText}>X</Text>
-              </TouchableOpacity>
-            </View>
-          </KeyboardAvoidingView>
-        ) : (
-          <TouchableOpacity
-            onPress={() => this.setCatModalVisible(!this.state.catModalVisible)}
-            style={styles.button}
-          >
-            <Text style={styles.buttonText}>+SUBJECT</Text>
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity
+          onPress={() => this.setCatModalVisible(!this.state.catModalVisible)}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>+SUBJECT</Text>
+        </TouchableOpacity>
+        {/* )} */}
         {this.renderChallenges()}
         <View>
           <Modal
@@ -222,11 +195,7 @@ class ChallengeComponent extends Component {
               Alert.alert("Modal has been closed.");
             }}
           >
-            <KeyboardAvoidingView
-              style={{ flex: 1, marginBottom: 10 }}
-              behavior="padding"
-              keyboardVerticalOffset="0"
-            >
+            <KeyboardAwareScrollView>
               <ScrollView>
                 <View style={styles.modalView}>
                   <Text
@@ -240,7 +209,6 @@ class ChallengeComponent extends Component {
                   <Text style={styles.modalTitle}>
                     ARE YOU SURE YOU WANT TO DELETE THIS CHALLENGE?{" "}
                   </Text>
-                  <View style={{ height: 15 }}></View>
 
                   <View style={styles.modalButtons}>
                     <TouchableOpacity
@@ -260,7 +228,7 @@ class ChallengeComponent extends Component {
                   </View>
                 </View>
               </ScrollView>
-            </KeyboardAvoidingView>
+              </KeyboardAwareScrollView>
           </Modal>
         </View>
         <View>
@@ -283,12 +251,13 @@ class ChallengeComponent extends Component {
                   x
                 </Text>
                 <Text style={styles.modalTitle}>SELECT A CATEGORY ICON </Text>
-                <View style={{ height: 150 }}>
+                <View style={styles.categoryView}>
                   <ScrollView
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     style={styles.iconScroll}
                   >
+                    
                     <TouchableOpacity
                       onPress={() =>
                         this.setState({
@@ -296,7 +265,9 @@ class ChallengeComponent extends Component {
                         })
                       }
                     >
+                      <View style={styles.imageContainer}>
                       <Image
+                      resizeMode='contain'
                         source={MathIcon}
                         style={
                           !this.state.selectedImage ||
@@ -305,6 +276,7 @@ class ChallengeComponent extends Component {
                             : styles.fadedImage
                         }
                       />
+                      </View>
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={() =>
@@ -313,7 +285,9 @@ class ChallengeComponent extends Component {
                         })
                       }
                     >
+                      <View style={styles.imageContainer}>
                       <Image
+                      resizeMode='contain'
                         source={ReadingIcon}
                         style={
                           !this.state.selectedImage ||
@@ -323,6 +297,7 @@ class ChallengeComponent extends Component {
                             : styles.fadedImage
                         }
                       />
+                      </View>
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={() =>
@@ -331,16 +306,19 @@ class ChallengeComponent extends Component {
                         })
                       }
                     >
-                      <Image
-                        source={ScienceIcon}
-                        style={
-                          !this.state.selectedImage ||
-                          this.state.selectedImage ===
-                            "../assets/ScienceIcon.png"
-                            ? styles.image
-                            : styles.fadedImage
-                        }
-                      />
+                      <View style={styles.imageContainer}>
+                        <Image
+                          source={ScienceIcon}
+                          resizeMode="contain"
+                          style={
+                            !this.state.selectedImage ||
+                            this.state.selectedImage ===
+                              "../assets/ScienceIcon.png"
+                              ? styles.image
+                              : styles.fadedImage
+                          }
+                        />
+                      </View>
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={() =>
@@ -349,22 +327,25 @@ class ChallengeComponent extends Component {
                         })
                       }
                     >
-                      <Image
-                        source={HistoryIcon}
-                        style={
-                          !this.state.selectedImage ||
-                          this.state.selectedImage ===
-                            "../assets/HistoryIcon.png"
-                            ? styles.image
-                            : styles.fadedImage
-                        }
-                      />
+                      <View style={styles.imageContainer}>
+                        <Image
+                          source={HistoryIcon}
+                          resizeMode="contain"
+                          style={
+                            !this.state.selectedImage ||
+                            this.state.selectedImage ===
+                              "../assets/HistoryIcon.png"
+                              ? styles.image
+                              : styles.fadedImage
+                          }
+                        />
+                      </View>
                     </TouchableOpacity>
                   </ScrollView>
                 </View>
-                <View style={styles.fieldBackground}>
+                <View>
                   <TextInput
-                    style={styles.centered}
+                    // style={styles.centered}
                     placeholder="CATEGORY NAME"
                     placeholderTextColor="#ed553b"
                     style={styles.modalFields}
@@ -397,86 +378,62 @@ class ChallengeComponent extends Component {
   }
 }
 
+const windowSize = Dimensions.get("window");
 const styles = StyleSheet.create({
   main: {
     backgroundColor: "#f6d55c",
-    flex: 1,
+    height: "100%",
+    width: "100%",
     alignItems: "center",
     justifyContent: "flex-start",
   },
-  loading:{
-    backgroundColor:'#f6d55c',
-    flex:1,
-    alignItems:'center',
-    justifyContent:'center'
+  loading: {
+    backgroundColor: "#f6d55c",
+    height: "100%",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: {
     fontFamily: "Dosis",
     color: "#ed553b",
     marginTop: "20%",
-    marginBottom: 60,
-    fontSize: 40,
+    marginBottom: percentToSize(windowSize, 9), //60,
+    fontSize: percentToSize(windowSize, 6), //40,
   },
-  errMess: {
-    fontFamily: "Dosis",
-    color: "#ed553b",
-    marginTop: 10,
-    fontSize: 24,
-  },
-  fieldBackground: {
-    width: 225,
-    marginTop: 15,
-    backgroundColor: "rgba(255, 255, 255, 0.51)",
-    opacity: 1,
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.51)",
-    borderRadius: 50,
-    color: "red",
+  imageContainer: {
+    height: percentToSize(windowSize, 12),
+    width: percentToSize(windowSize, 12),
+    marginTop: percentToSize(windowSize, 2),
+    marginBottom: percentToSize(windowSize, 2),
   },
   image: {
-    height: 95,
-    width: 84,
-    marginLeft: 10,
+    height: percentToSize(windowSize, 12), //95,
+    width: percentToSize(windowSize, 12), //84,
+    marginLeft: percentToSize(windowSize, 1),
     opacity: 1,
-    resizeMode: "contain",
   },
   fadedImage: {
-    height: 70,
-    width: 65,
-    marginLeft: 10,
+    height: percentToSize(windowSize, 10), //95,
+    width: percentToSize(windowSize, 10), //84,
+    marginLeft: percentToSize(windowSize, 1),
     opacity: 0.5,
   },
-  fields: {
-    padding: 5,
-    opacity: 1,
-    fontFamily: "Dosis",
-    color: "#ed553b",
-    fontSize: 16,
-    marginLeft: 10,
-  },
-  fieldBackground: {
-    width: "80%",
-    marginTop: 15,
-    backgroundColor: "#f2f2f2",
-    opacity: 1,
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.51)",
-    borderRadius: 50,
-    color: "red",
-    alignItems: "center",
+  categoryView:{
+     height: percentToSize(windowSize, 16)
   },
   modalFields: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    fontSize: 24,
+    fontSize: percentToSize(windowSize, 3.5),//24,
   },
   button: {
-    width: 225,
-    marginTop: 20,
+    width: percentToSize(windowSize, 40),//225,
+    marginTop: percentToSize(windowSize, 3),
     backgroundColor: "#ed553b",
     color: "#fff",
     borderRadius: 50,
-    padding: 5,
+    padding: percentToSize(windowSize, .75),
     shadowOffset: { width: -5, height: 5 },
     shadowColor: "black",
     shadowOpacity: 0.5,
@@ -485,60 +442,30 @@ const styles = StyleSheet.create({
   buttonText: {
     fontFamily: "Dosis",
     color: "#fff",
-    fontSize: 16,
+    fontSize: percentToSize(windowSize, 2.5),
   },
   row: {
     flexDirection: "row",
     alignItems: "flex-end",
     justifyContent: "flex-end",
   },
-  greenButton: {
-    height: 30,
-    width: 30,
-    marginHorizontal: 5,
-    marginVertical: 5,
-    borderRadius: 50,
-    backgroundColor: "green",
-  },
-  redButton: {
-    height: 30,
-    width: 30,
-    marginHorizontal: 5,
-    marginVertical: 5,
-    borderRadius: 50,
-    backgroundColor: "#ed553b",
-    alignItems: "center",
-    justifyContent: "center",
-  },
   modalX: {
-    fontSize: 40,
+    fontSize: percentToSize(windowSize, 6),
     alignSelf: "flex-end",
-    marginBottom: 10,
-  },
-  modalButton: {
-    width: 125,
-    marginTop: 20,
-    marginHorizontal: 5,
-    backgroundColor: "#ed553b",
-    color: "#fff",
-    borderRadius: 50,
-    padding: 5,
-    shadowOffset: { width: -5, height: 5 },
-    shadowColor: "black",
-    shadowOpacity: 0.5,
-    alignItems: "center",
+    marginVertical: percentToSize(windowSize, 2),
+    
   },
   modalButtons: {
     flexDirection: "row",
     flex: 1,
   },
   modalView: {
-    marginHorizontal: 30,
-    marginTop: 5,
+    marginHorizontal: percentToSize(windowSize, 6),
+    marginTop: percentToSize(windowSize, 8),
     backgroundColor: "#fff",
     borderRadius: 20,
-    paddingHorizontal: 35,
-    paddingBottom: 10,
+    paddingHorizontal: percentToSize(windowSize, 6),
+    paddingBottom: percentToSize(windowSize, 3),
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
@@ -549,24 +476,31 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+  modalKeyboardView:{
+    marginBottom: percentToSize(windowSize, 2) 
+  },
   modalButton: {
-    marginTop: 40,
+    marginTop: percentToSize(windowSize, 6),//40,
+    width: percentToSize(windowSize, 15),
     backgroundColor: "#ed553b",
     color: "#fff",
     borderRadius: 50,
-    padding: 5,
-
+    padding: percentToSize(windowSize, 1),
     alignItems: "center",
-    marginHorizontal: 10,
+    marginHorizontal: percentToSize(windowSize, 2),
   },
   modalButtonText: {
     fontFamily: "Dosis",
     color: "#fff",
-    fontSize: 16,
-    paddingHorizontal: 10,
+    fontSize: percentToSize(windowSize, 2.5),
+    paddingHorizontal: percentToSize(windowSize, 2),
   },
   iosNavIcon: {
-     marginTop: 15, alignSelf:'flex-start' 
+    marginTop: percentToSize(windowSize, 2.5),
+    alignSelf: "flex-start",
   },
+  notIOS:{
+    marginTop: percentToSize(windowSize, 2.5),
+  }
 });
 export default connect(mapStateToProps, mapDispatchToProps)(ChallengeComponent);

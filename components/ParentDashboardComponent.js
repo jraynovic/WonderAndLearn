@@ -8,10 +8,9 @@ import {
   Image,
   KeyboardAvoidingView,
   ScrollView,
-  SafeAreaView,
-  FlatList,
   ActivityIndicator,
   Modal,
+  Dimensions,
 } from "react-native";
 import { addNewKid, deleteKid, setSelectedKid } from "../redux/ActionCreators";
 import { connect } from "react-redux";
@@ -26,6 +25,8 @@ import RingProgress from "./RingProgressComponent";
 import ParentKidComponent from "./ParentKidComponent";
 import { Icon } from "react-native-elements";
 import { Platform } from "react-native";
+import { percentToSize, widthPercentToSize } from "../shared/sizeUtils";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const mapDispatchToProps = {
   signUp: (user) => signUp(user),
@@ -105,39 +106,60 @@ class ParentDashboardComponent extends Component {
   RenderImage = (image) => {
     if (image === "../assets/rainbowHills.png") {
       return (
+        <View style={styles.profileImageContainer}>
         <Image
+         resizeMode='contain'
           style={
             this.props.user.selectedKid.image === "../assets/rainbowHills.png"
-              ? styles.fadedImage
-              : styles.image
+              ? styles.profileFadedImage
+              : styles.profileImage
           }
           source={rainbow}
         />
+        </View>
       );
     } else if (image === "../assets/Cat.png") {
       return (
+        <View style={styles.profileImageContainer}>
         <Image
+         resizeMode='contain'
           style={
             this.props.user.selectedKid.image === "../assets/Cat.png"
-              ? styles.fadedImage
-              : styles.image
+              ? styles.profileFadedImage
+              : styles.profileImage
           }
           source={cat}
         />
+        </View>
       );
     } else if (image === "../assets/Dinosaur.png") {
       return (
+        <View style={styles.profileImageContainer}>
         <Image
+        resizeMode='contain'
           style={
             this.props.user.selectedKid.image === "../assets/Dinosaur.png"
-              ? styles.fadedImage
-              : styles.image
+              ? styles.profileFadedImage
+              : styles.profileImage
           }
           source={dinosaur}
         />
+        </View>
       );
     } else if (image === "../assets/Dog.png") {
-      return <Image style={styles.image} source={dog} />;
+      return (
+        <View style={styles.profileImageContainer}>
+        <Image
+        resizeMode='contain'
+          style={
+            this.props.user.selectedKid.image === "../assets/Dog.png"
+              ? styles.profileFadedImage
+              : styles.profileImage
+          }
+          source={dog}
+        />
+        </View>
+      );
     }
   };
 
@@ -170,8 +192,7 @@ class ParentDashboardComponent extends Component {
   };
 
   render() {
-
-    if (!this.state.fontsLoaded ||this.props.user.loading) {
+    if (!this.state.fontsLoaded || this.props.user.loading) {
       return (
         <View style={styles.loading}>
           <ActivityIndicator size="large" color="#ed553b" />
@@ -195,16 +216,21 @@ class ParentDashboardComponent extends Component {
           <Text style={styles.title}>PARENT DASHBOARD</Text>
         </View>
         <View style={styles.profiles}>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <TouchableOpacity
-                style={styles.centered}
-                onPress={() => this.setModalVisible(!this.state.modalVisible)}
-              >
-                <Image source={newUser} style={styles.image} />
-                <Text style={styles.profileText}>New User</Text>
-              </TouchableOpacity>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          
+            <TouchableOpacity
+              style={styles.centered}
+              onPress={() => this.setModalVisible(!this.state.modalVisible)}
+            >
+              <View style={styles.profileImageContainer}>
+                <Image resizeMode='contain' source={newUser} style={styles.newUserImage} />
+              </View>
+              
+              <Text style={styles.profileText}>New User</Text>
+            </TouchableOpacity>
+            
               {this.RenderKids()}
-            </ScrollView>
+          </ScrollView>
         </View>
         <View style={styles.centered}>
           <View>
@@ -215,7 +241,7 @@ class ParentDashboardComponent extends Component {
                 navigate={() => this.handleNavigation()}
               />
             ) : (
-              <View/> 
+              <View />
             )}
           </View>
         </View>
@@ -228,12 +254,12 @@ class ParentDashboardComponent extends Component {
               Alert.alert("Modal has been closed.");
             }}
           >
-            <KeyboardAvoidingView
+            {/* <KeyboardAvoidingView
               style={{ flex: 1, marginBottom: 10 }}
               behavior="padding"
               keyboardVerticalOffset="0"
-            >
-              <ScrollView>
+            > */}
+              <KeyboardAwareScrollView>
                 <View style={styles.modalView}>
                   <Text
                     style={styles.modalX}
@@ -249,72 +275,88 @@ class ParentDashboardComponent extends Component {
                       horizontal
                       showsHorizontalScrollIndicator={false}
                     >
-                      <TouchableOpacity
-                        onPress={() =>
-                          this.setState({
-                            selectedImage: "../assets/Dinosaur.png",
-                          })
-                        }
-                      >
-                        <Image
-                          source={dinosaur}
-                          style={
-                            !this.state.selectedImage ||
-                            this.state.selectedImage ===
-                              "../assets/Dinosaur.png"
-                              ? styles.image
-                              : styles.fadedImage
+                      <View style={styles.imageContainer}>
+                        <TouchableOpacity
+                          onPress={() =>
+                            this.setState({
+                              selectedImage: "../assets/Dinosaur.png",
+                            })
                           }
-                        />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={() =>
-                          this.setState({ selectedImage: "../assets/Cat.png" })
-                        }
-                      >
-                        <Image
-                          source={cat}
-                          style={
-                            !this.state.selectedImage ||
-                            this.state.selectedImage === "../assets/Cat.png"
-                              ? styles.image
-                              : styles.fadedImage
+                        >
+                          <Image
+                            source={dinosaur}
+                            resizeMode="contain"
+                            style={
+                              !this.state.selectedImage ||
+                              this.state.selectedImage ===
+                                "../assets/Dinosaur.png"
+                                ? styles.image
+                                : styles.fadedImage
+                            }
+                          />
+                        </TouchableOpacity>
+                      </View>
+                      <View style={styles.imageContainer}>
+                        <TouchableOpacity
+                          onPress={() =>
+                            this.setState({
+                              selectedImage: "../assets/Cat.png",
+                            })
                           }
-                        />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={() =>
-                          this.setState({ selectedImage: "../assets/Dog.png" })
-                        }
-                      >
-                        <Image
-                          source={dog}
-                          style={
-                            !this.state.selectedImage ||
-                            this.state.selectedImage === "../assets/Dog.png"
-                              ? styles.image
-                              : styles.fadedImage
+                        >
+                          <Image
+                            source={cat}
+                            resizeMode="contain"
+                            style={
+                              !this.state.selectedImage ||
+                              this.state.selectedImage === "../assets/Cat.png"
+                                ? styles.image
+                                : styles.fadedImage
+                            }
+                          />
+                        </TouchableOpacity>
+                      </View>
+                      <View style={styles.imageContainer}>
+                        <TouchableOpacity
+                          onPress={() =>
+                            this.setState({
+                              selectedImage: "../assets/Dog.png",
+                            })
                           }
-                        />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={() =>
-                          this.setState({
-                            selectedImage: "../assets/rainbowHills.png",
-                          })
-                        }
-                      >
-                        <Image
-                          source={rainbow}
-                          style={
-                            !this.state.selectedImage ||
-                            this.state.selectedImage ===
-                              "../assets/rainbowHills.png"
-                              ? styles.image
-                              : styles.fadedImage
+                        >
+                          <Image
+                            source={dog}
+                            resizeMode="contain"
+                            style={
+                              !this.state.selectedImage ||
+                              this.state.selectedImage === "../assets/Dog.png"
+                                ? styles.image
+                                : styles.fadedImage
+                            }
+                          />
+                        </TouchableOpacity>
+                      </View>
+                      <View style={styles.imageContainer}>
+                        <TouchableOpacity
+                          onPress={() =>
+                            this.setState({
+                              selectedImage: "../assets/rainbowHills.png",
+                            })
                           }
-                        />
-                      </TouchableOpacity>
+                        >
+                          <Image
+                            source={rainbow}
+                            resizeMode="contain"
+                            style={
+                              !this.state.selectedImage ||
+                              this.state.selectedImage ===
+                                "../assets/rainbowHills.png"
+                                ? styles.image
+                                : styles.fadedImage
+                            }
+                          />
+                        </TouchableOpacity>
+                      </View>
                     </ScrollView>
                   </View>
                   <View style={styles.fieldBackground}>
@@ -344,18 +386,21 @@ class ParentDashboardComponent extends Component {
                     </TouchableOpacity>
                   </View>
                 </View>
-              </ScrollView>
-              </KeyboardAvoidingView>
+              </KeyboardAwareScrollView>
+            {/* </KeyboardAvoidingView> */}
           </Modal>
         </View>
       </View>
     );
   }
 }
+
+const windowSize = Dimensions.get("window");
 const styles = StyleSheet.create({
   main: {
     backgroundColor: "#f6d55c",
-    flex: 1,
+    height: "100%",
+    width: "100%",
     justifyContent: "flex-start",
   },
   loading: {
@@ -368,26 +413,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  profiles:{
-    height:150
-  },
-  scrollViewContainer: {
-    height: 200,
-    maxHeight: 200,
+  profiles: {
+    height: percentToSize(windowSize, 22),
   },
   title: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    marginTop: "0%",
-    marginBottom: 0,
-    fontSize: 40,
+    fontSize: percentToSize(windowSize, 6),
   },
   fieldBackground: {
     width: "80%",
-    marginTop: 15,
+    marginTop: percentToSize(windowSize, 2),
     backgroundColor: "#f2f2f2",
     opacity: 1,
-    borderWidth: 1,
+    borderWidth: percentToSize(windowSize, 0.3),
     borderColor: "rgba(255, 255, 255, 0.51)",
     borderRadius: 50,
     color: "red",
@@ -396,36 +435,64 @@ const styles = StyleSheet.create({
   fields: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    fontSize: 24,
+    fontSize: percentToSize(windowSize, 4), //24,
   },
   noUser: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    fontSize: 24,
+    fontSize: percentToSize(windowSize, 4),
   },
   noUserContainer: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    fontSize: 24,
-    marginBottom: 50,
+    fontSize: percentToSize(windowSize, 4),
+    fontSize: percentToSize(windowSize, 7),
+  },
+  imageContainer: {
+    height: percentToSize(windowSize, 18),
+    width: percentToSize(windowSize, 18),
+    marginTop: percentToSize(windowSize, 2),
   },
   image: {
-    height: 98,
-    width: 84,
-    marginLeft: 10,
+    // height: 98,
+    // width: 84,
+    height: percentToSize(windowSize, 18),
+    width: percentToSize(windowSize, 18),
+    marginLeft: percentToSize(windowSize, 2),
     opacity: 1,
   },
   fadedImage: {
-    height: 95,
-    width: 84,
-    marginLeft: 10,
+    height: percentToSize(windowSize, 16),
+    width: percentToSize(windowSize, 16),
+    marginLeft: percentToSize(windowSize, 2),
     opacity: 0.5,
+  },
+  profileimageContainer: {
+    height: percentToSize(windowSize,18),
+    width: percentToSize(windowSize, 18),
+    marginTop: percentToSize(windowSize, 2),
+    marginBottom: percentToSize(windowSize, 2),
+  },
+  profileImage: {
+    height: percentToSize(windowSize, 16),
+    width: percentToSize(windowSize, 16),
+    opacity: 1,
+  },
+  profileFadedImage: {
+    height: percentToSize(windowSize,17),
+    width: percentToSize(windowSize, 17),
+    opacity: 0.5,
+  },
+  newUserImage: {
+    height: percentToSize(windowSize, 17),
+    width: percentToSize(windowSize, 17),
+    marginLeft: percentToSize(windowSize, 1),
+    opacity: 1,
   },
   profileText: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    marginTop: 0,
-    fontSize: 16,
+    fontSize: percentToSize(windowSize, 3.5)//16,
   },
   modalButtons: {
     flexDirection: "row",
@@ -433,32 +500,31 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
   },
   button: {
-    marginTop: 40,
+    marginTop: percentToSize(windowSize, 5),
     backgroundColor: "#ed553b",
     color: "#fff",
     borderRadius: 50,
-    padding: 5,
-
+    padding: percentToSize(windowSize, 1),
     alignItems: "center",
-    marginHorizontal: 10,
+    marginHorizontal: percentToSize(windowSize, 2)//10,
   },
   buttonText: {
     fontFamily: "Dosis",
     color: "#fff",
-    fontSize: 16,
-    paddingHorizontal: 10,
+    fontSize: percentToSize(windowSize, 2.5),
+    paddingHorizontal: percentToSize(windowSize, 2)
   },
   modalX: {
-    fontSize: 40,
+    fontSize: percentToSize(windowSize, 6),
     alignSelf: "flex-end",
-    marginBottom: 10,
+    marginBottom: percentToSize(windowSize, 2)
   },
   modalView: {
-    margin: 30,
-    marginTop: 170,
+    margin: percentToSize(windowSize, 3.5),//30,
+    marginTop: percentToSize(windowSize, 20),
     backgroundColor: "#fff",
     borderRadius: 20,
-    padding: 35,
+    padding: percentToSize(windowSize, 3.5),//35,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {

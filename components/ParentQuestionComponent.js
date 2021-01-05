@@ -2,20 +2,20 @@ import React, { Component } from "react";
 import {
   TouchableOpacity,
   Text,
-  TextInput,
   View,
   StyleSheet,
   KeyboardAvoidingView,
   ScrollView,
-  SafeAreaView,
   Modal,
   ActivityIndicator,
   Alert,
+  Dimensions
 } from "react-native";
 import { deleteQuestionKid } from "../redux/ActionCreators";
 import { connect } from "react-redux";
 import * as Font from "expo-font";
 import { Icon } from "react-native-elements";
+import { percentToSize, widthPercentToSize } from "../shared/sizeUtils";
 
 const mapDispatchToProps = {
   deleteQuestionKid: (user, kidId, challengeId, questionId, question) =>
@@ -107,18 +107,18 @@ class ParentQuestionComponent extends Component {
         return (
           <TouchableOpacity
             onPress={() => this.handleEdit(question)}
-            style={styles.question}
+            style={styles.button}
             onLongPress={() => this.stageDeletion(question)}
             key={question._id}
           >
             <View style={styles.row}>
               <View style={{ flexDirection: "row" }}>
                 <View style={styles.leftAlign}>
-                  <Text style={styles.questionText}>{`${numPlace}.)`}</Text>
+                  <Text style={styles.buttonText}>{`${numPlace}.)`}</Text>
                 </View>
                 <View style={styles.centered}>
                   <Text
-                    style={styles.questionText}
+                    style={styles.buttonText}
                   >{`   ${question.question}`}</Text>
                 </View>
               </View>
@@ -148,13 +148,13 @@ class ParentQuestionComponent extends Component {
       <View style={styles.main}>
         {Platform.OS === "ios" ? (
           <TouchableOpacity
-            style={{ marginTop: 15, alignSelf: "right" }}
+            style={styles.iosNavIcon}
             onPress={() => this.props.navigation.goBack()}
           >
             <Icon name="chevron-left" size="50" color="#ed553b" />
           </TouchableOpacity>
         ) : (
-          <View style={{ marginTop: 30 }} />
+          <View style={styles.notIOS} />
         )}
         <Text style={styles.title}>
           {this.props.navigation.state.params.challenge.name}
@@ -170,10 +170,14 @@ class ParentQuestionComponent extends Component {
           <Text style={styles.questionText}>+QUESTION</Text>
         </TouchableOpacity>
         <ScrollView
+          style={styles.questionScrollView}
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
         >
+          <View style={styles.questionView}>
           {this.renderQuestions()}
+          </View>
+         
         </ScrollView>
         <View>
           <Modal
@@ -185,7 +189,7 @@ class ParentQuestionComponent extends Component {
             }}
           >
             <KeyboardAvoidingView
-              style={{ flex: 1, marginBottom: 10 }}
+              style={styles.modalKeyboardAvoidingView}
               behavior="padding"
               keyboardVerticalOffset="0"
             >
@@ -202,7 +206,7 @@ class ParentQuestionComponent extends Component {
                   <Text style={styles.modalTitle}>
                     ARE YOU SURE YOU WANT TO DELETE THIS QUESTION?{" "}
                   </Text>
-                  <View style={{ height: 15 }}></View>
+                  
 
                   <View style={styles.modalButtons}>
                     <TouchableOpacity
@@ -230,16 +234,19 @@ class ParentQuestionComponent extends Component {
   }
 }
 
+const windowSize = Dimensions.get("window");
 const styles = StyleSheet.create({
   main: {
     backgroundColor: "#f6d55c",
-    flex: 1,
+    height: "100%",
+    width: "100%",
     alignItems: "center",
     justifyContent: "flex-start",
   },
   loading: {
     backgroundColor: "#f6d55c",
-    flex: 1,
+    height: "100%",
+    width: "100%",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -247,42 +254,38 @@ const styles = StyleSheet.create({
     fontFamily: "Dosis",
     color: "#ed553b",
     marginTop: "0%",
-    marginBottom: 60,
-    fontSize: 40,
+    marginBottom: percentToSize(windowSize, 9), //60,
+    fontSize: percentToSize(windowSize, 6), //40,
   },
   questionText: {
     fontFamily: "Dosis",
     color: "#fff",
-    fontSize: 16,
+    fontSize: percentToSize(windowSize, 2.5)
   },
   button: {
-    width: 225,
-    marginTop: 40,
+    width: widthPercentToSize(windowSize, 75),//225,
+    marginTop: percentToSize(windowSize, 2),
     backgroundColor: "#ed553b",
     color: "#fff",
     borderRadius: 50,
-    padding: 5,
+    padding: percentToSize(windowSize, .75),
     shadowOffset: { width: -5, height: 5 },
     shadowColor: "black",
     shadowOpacity: 0.5,
     alignItems: "center",
+    marginBottom:percentToSize(windowSize,4)
   },
-  question: {
-    marginLeft: 4,
-    width: 290,
-    marginTop: 40,
-    backgroundColor: "#ed553b",
-    color: "#fff",
-    borderRadius: 50,
-    padding: 5,
-    shadowOffset: { width: -2, height: 2 },
-    shadowColor: "black",
-    shadowOpacity: 0.5,
-    alignItems: "center",
+  questionView:{
+    alignContent:'center',
+    marginLeft: widthPercentToSize(windowSize, 12.5),
+  },
+  questionScrollView:{
+    width: widthPercentToSize(windowSize, 100),
+    // height:percentToSize(windowSize,100),
+    marginBottom:percentToSize(windowSize,3)
   },
   row: {
     flexDirection: "row",
-    flex: 1,
     alignSelf: "center",
   },
   leftAlign: {
@@ -296,37 +299,33 @@ const styles = StyleSheet.create({
   buttonText: {
     fontFamily: "Dosis",
     color: "#fff",
-    fontSize: 16,
+    fontSize: percentToSize(windowSize, 2.5)
   },
   modalX: {
-    fontSize: 40,
+    fontSize: percentToSize(windowSize, 6),
     alignSelf: "flex-end",
-    marginBottom: 10,
+    marginBottom: percentToSize(windowSize, 2),
   },
   modalButton: {
-    width: 125,
-    marginTop: 20,
-    marginHorizontal: 5,
+    marginTop: percentToSize(windowSize, 6),//40,
+    width: percentToSize(windowSize, 15),
     backgroundColor: "#ed553b",
     color: "#fff",
     borderRadius: 50,
-    padding: 5,
-    shadowOffset: { width: -5, height: 5 },
-    shadowColor: "black",
-    shadowOpacity: 0.5,
+    padding: percentToSize(windowSize, 1),
     alignItems: "center",
+    marginHorizontal: percentToSize(windowSize, 2),
   },
   modalButtons: {
     flexDirection: "row",
-    flex: 1,
   },
   modalView: {
-    marginHorizontal: 30,
-    marginTop: 140,
+    marginHorizontal: percentToSize(windowSize, 6),
+    marginTop: percentToSize(windowSize, 8),
     backgroundColor: "#fff",
     borderRadius: 20,
-    paddingHorizontal: 35,
-    paddingBottom: 10,
+    paddingHorizontal: percentToSize(windowSize, 6),
+    paddingBottom: percentToSize(windowSize, 3),
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
@@ -337,6 +336,16 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+  modalKeyboardAvoidingView:{
+     marginBottom: percentToSize(windowSize, 2.5)
+  },
+  iosNavIcon: {
+    marginTop: percentToSize(windowSize, 2.5),
+    alignSelf: "flex-start",
+  },
+  notIOS:{
+    marginTop: percentToSize(windowSize, 2.5),
+  }
 });
 export default connect(
   mapStateToProps,

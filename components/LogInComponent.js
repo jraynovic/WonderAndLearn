@@ -7,6 +7,8 @@ import {
   StyleSheet,
   ActivityIndicator,
   Image,
+  ScrollView,
+  Dimensions
 } from "react-native";
 import { signUp, logIn, logInFailed } from "../redux/ActionCreators";
 import { connect } from "react-redux";
@@ -15,6 +17,7 @@ import Checkbox from "../assets/Checkbox.png";
 import * as SecureStore from "expo-secure-store";
 import * as Font from "expo-font";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import {percentToSize, widthPercentToSize} from '../shared/sizeUtils'
 
 const mapDispatchToProps = {
   // signUp:(user)=> signUp(user),
@@ -90,9 +93,9 @@ class LogInComponent extends Component {
 
   renderCheckBox = () => {
     if (this.state.remember) {
-      return <Image style={styles.image} source={CheckboxChecked} />;
+      return <Image  resizeMode='contain' style={styles.image} source={CheckboxChecked} />;
     } else {
-      return <Image style={styles.image} source={Checkbox} />;
+      return <Image resizeMode='contain' style={styles.image} source={Checkbox} />;
     }
   };
 
@@ -106,6 +109,7 @@ class LogInComponent extends Component {
     }
 
     return (
+      <ScrollView style={styles.mainScrollView}>
       <KeyboardAwareScrollView
         resetScrollToCoords={{ x: 0, y: 0 }}
         contentContainerStyle={styles.main}
@@ -163,20 +167,28 @@ class LogInComponent extends Component {
           </TouchableOpacity>
         </View>
       </KeyboardAwareScrollView>
+      </ScrollView>
     );
   }
 }
 
+const windowSize = Dimensions.get('window')
 const styles = StyleSheet.create({
+  mainScrollView: {
+    height: "100%",
+    backgroundColor: "#f6d55c",
+  },
   main: {
     backgroundColor: "#f6d55c",
-    flex: 1,
+    height:'100%',
+    width:'100%',
     alignItems: "center",
     justifyContent: "flex-start",
   },
   loading: {
     backgroundColor: "#f6d55c",
-    flex: 1,
+    height:'100%',
+    width:'100%',
     alignItems: "center",
     justifyContent: "center",
   },
@@ -184,40 +196,40 @@ const styles = StyleSheet.create({
     fontFamily: "Dosis",
     color: "#ed553b",
     marginTop: "25%",
-    marginBottom: 60,
-    fontSize: 40,
+    marginBottom: '10%',
+    fontSize: percentToSize(windowSize,6),
   },
   errMess: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    marginTop: 10,
-    fontSize: 24,
+    marginTop: '2%',
+    fontSize: percentToSize(windowSize,3.6),
   },
   fieldBackground: {
     width: "60%",
-    marginTop: 15,
+    marginTop:'4%',
     backgroundColor: "rgba(255, 255, 255, 0.51)",
     opacity: 1,
-    borderWidth: 1,
+    borderWidth: percentToSize(windowSize,.15),
     borderColor: "rgba(255, 255, 255, 0.51)",
     borderRadius: 50,
     color: "red",
   },
   fields: {
-    padding: 5,
+    padding: percentToSize(windowSize,.5),
     opacity: 1,
     fontFamily: "Dosis",
     color: "#ed553b",
-    fontSize: 16,
-    marginLeft: 10,
+    fontSize: percentToSize(windowSize,2.4),
+    marginLeft: '5%',
   },
-  logInButton: {
-    width: 225,
-    marginTop: 40,
+   logInButton: {
+    width:  widthPercentToSize(windowSize,60),
+    marginTop: '10%', 
     backgroundColor: "#ed553b",
     color: "#fff",
     borderRadius: 50,
-    padding: 5,
+    padding: '1.3%',
     shadowOffset: { width: -5, height: 5 },
     shadowColor: "black",
     shadowOpacity: 0.5,
@@ -226,31 +238,33 @@ const styles = StyleSheet.create({
   logInButtonText: {
     fontFamily: "Dosis",
     color: "#fff",
-    fontSize: 16,
+    fontSize:percentToSize(windowSize,2.4),
   },
   rememberRow: {
     flexDirection: "row",
-    marginTop: 10,
+    marginTop: '3%',
     alignItems: "center",
-    marginLeft: -60,
+    // marginLeft: -60,
+    marginLeft: '-15%',
   },
   rememberText: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    fontSize: 16,
-    marginRight: 5,
+    fontSize: percentToSize(windowSize,2.4),
+    marginRight: '1%',
   },
   image: {
-    marginRight: 10,
-    height: 25,
-    width: 25,
+    marginRight: '2%',
+    height: percentToSize(windowSize,4),
+   width: percentToSize(windowSize,4),
+
   },
   footer: {
+    marginTop: '15%', 
     fontFamily: "Dosis",
     color: "#ed553b",
-    fontSize: 16,
-    marginTop: 200,
-    marginLeft: 8,
+    fontSize: percentToSize(windowSize,2.4), 
+    marginBottom:'4%' 
   },
 });
 export default connect(mapStateToProps, mapDispatchToProps)(LogInComponent);

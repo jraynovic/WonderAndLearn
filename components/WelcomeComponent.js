@@ -6,10 +6,12 @@ import {
   StyleSheet,
   Image,
   ActivityIndicator,
+  Dimensions
 } from "react-native";
 import { connect } from "react-redux";
 import * as Font from "expo-font";
 import Learning from "../assets/Learning.png";
+import {percentToSize, widthPercentToSize} from '../shared/sizeUtils'
 
 
 const mapStateToProps = (state) => {
@@ -89,37 +91,41 @@ class WelcomeComponent extends Component {
   }
 }
 
+
+const windowSize = Dimensions.get('window')
 const styles = StyleSheet.create({
   main: {
     backgroundColor: "#f6d55c",
-    flex: 1,
+    height:'100%',
+    width:'100%',
     alignItems: "center",
     justifyContent: "flex-start",
   },
   loading: {
     backgroundColor: "#f6d55c",
-    flex: 1,
+    height:'100%',
+    width:'100%',
     alignItems: "center",
     justifyContent: "center",
   },
   title: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    marginTop: "20%",
-    marginBottom: 20,
-    fontSize: 40,
+    marginTop: "15%",
+    marginBottom: '10%',
+    fontSize: percentToSize(windowSize,6.5),
   },
   image: {
-    height: 310,
-    width: 270,
-  },
+    height: percentToSize(windowSize,45),
+    resizeMode:'contain'
+  }, 
   logInButton: {
-    width: 225,
-    marginTop: 40,
+    width:  widthPercentToSize(windowSize,70),
+    marginTop: '10%', 
     backgroundColor: "#ed553b",
     color: "#fff",
     borderRadius: 50,
-    padding: 5,
+    padding: '2%',
     shadowOffset: { width: -5, height: 5 },
     shadowColor: "black",
     shadowOpacity: 0.5,
@@ -128,7 +134,7 @@ const styles = StyleSheet.create({
   logInButtonText: {
     fontFamily: "Dosis",
     color: "#fff",
-    fontSize: 16,
+    fontSize: percentToSize(windowSize,2.5),
   },
 });
 export default connect(mapStateToProps)(WelcomeComponent);

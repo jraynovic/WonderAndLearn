@@ -8,11 +8,15 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   ActivityIndicator,
+  Dimensions
 } from "react-native";
 import { addNewQuestionKid } from "../redux/ActionCreators";
 import { connect } from "react-redux";
 import * as Font from "expo-font";
 import { Icon } from "react-native-elements";
+import { percentToSize, widthPercentToSize } from "../shared/sizeUtils";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+
 
 const mapDispatchToProps = {
   addNewQuestionKid: (userId, kidId, challengeId, question, token) =>
@@ -87,25 +91,21 @@ class ParentBuildQuestionComponent extends Component {
     }
     return (
       <View style={styles.main}>
-        <ScrollView>
+        {/* <ScrollView> */}
           {Platform.OS === "ios" ? (
             <TouchableOpacity
-              style={{ marginTop: 15, alignSelf: "right" }}
+              style={styles.iosNavIcon}
               onPress={() => this.props.navigation.goBack()}
             >
-              <Icon name="chevron-left" size="50" color="#ed553b" />
+              <Icon name="chevron-left" size='50' color="#ed553b" />
             </TouchableOpacity>
           ) : (
-            <View style={{ marginTop: 30 }} />
+            <View style={styles.notIOS} />
           )}
           <Text style={styles.title}>
             {this.props.navigation.state.params.category.name.toUpperCase()}
           </Text>
-          <KeyboardAvoidingView
-            style={styles.questionView}
-            behavior="padding"
-            keyboardVerticalOffset="0"
-          >
+          <KeyboardAwareScrollView>
             <View style={styles.textBoxTitle}>
               <Text style={styles.whiteText}>QUESTION</Text>
               <View>
@@ -170,22 +170,25 @@ class ParentBuildQuestionComponent extends Component {
                 <Text style={styles.buttonText}>CANCEL</Text>
               </TouchableOpacity>
             </View>
-          </KeyboardAvoidingView>
-        </ScrollView>
+            </KeyboardAwareScrollView>
+        {/* </ScrollView> */}
       </View>
     );
   }
 }
 
+const windowSize = Dimensions.get("window");
 const styles = StyleSheet.create({
   main: {
     backgroundColor: "#f6d55c",
-    flex: 1,
+    height: "100%",
+    width: "100%",
     justifyContent: "flex-start",
   },
   loading: {
     backgroundColor: "#f6d55c",
-    flex: 1,
+    height: "100%",
+    width: "100%",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -193,29 +196,22 @@ const styles = StyleSheet.create({
     fontFamily: "Dosis",
     color: "#ed553b",
     marginTop: "0%",
-    marginBottom: 60,
-    fontSize: 40,
+    marginBottom:percentToSize(windowSize, 9), // 60,
+    fontSize: percentToSize(windowSize, 6),
     textAlign: "center",
   },
   questionView:{ 
-    flex: 1, 
-    marginBottom: 10
+    marginBottom: percentToSize(windowSize, 2)//10
   },
   textBoxTitle: {
-    justifyContent: "flex-start",
-    marginLeft: 50,
-    marginTop: 10,
+    
+    marginLeft: widthPercentToSize(windowSize,15),
+    marginTop: percentToSize(windowSize, 2),
   },
   whiteText: {
     fontFamily: "Dosis",
     color: "#fff",
-    fontSize: 24,
-  },
-  errMess: {
-    fontFamily: "Dosis",
-    color: "#ed553b",
-    marginTop: 10,
-    fontSize: 24,
+    fontSize: percentToSize(windowSize, 3.5)//24,
   },
   buttonRow: {
     flexDirection: "row",
@@ -223,8 +219,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   fieldBackground: {
-    width: "80%",
-    marginTop: 15,
+    width: widthPercentToSize(windowSize,68),
+    marginTop:  percentToSize(windowSize, 3),
     backgroundColor: "#ed553b",
     opacity: 1,
     borderWidth: 1,
@@ -233,8 +229,8 @@ const styles = StyleSheet.create({
     color: "red",
   },
   greenFieldBackground: {
-    width: "80%",
-    marginTop: 15,
+    width: widthPercentToSize(windowSize,68),
+    marginTop: percentToSize(windowSize, 3),
     backgroundColor: "green",
     opacity: 1,
     borderWidth: 1,
@@ -243,20 +239,20 @@ const styles = StyleSheet.create({
     color: "red",
   },
   fields: {
-    padding: 5,
+    padding: percentToSize(windowSize, .75),
     opacity: 1,
     fontFamily: "Dosis",
     color: "#fff",
-    fontSize: 16,
-    marginLeft: 10,
+    fontSize: percentToSize(windowSize, 2.5),//16,
+    marginLeft: percentToSize(windowSize, 2),
   },
   button: {
-    width: "25%",
-    marginTop: 40,
+    width: widthPercentToSize(windowSize,25),//"25%",
+    marginTop: percentToSize(windowSize, 6),
     backgroundColor: "#ed553b",
     color: "#fff",
     borderRadius: 50,
-    padding: 5,
+    padding: percentToSize(windowSize, .75),
     shadowOffset: { width: -5, height: 5 },
     shadowColor: "black",
     shadowOpacity: 0.5,
@@ -265,7 +261,14 @@ const styles = StyleSheet.create({
   buttonText: {
     fontFamily: "Dosis",
     color: "#fff",
-    fontSize: 16,
+    fontSize: percentToSize(windowSize, 2.5),
+  },
+  iosNavIcon: {
+    marginTop: percentToSize(windowSize, 2.5),
+    alignSelf: "flex-start",
+  },
+  notIOS:{
+    marginTop: percentToSize(windowSize, 2.5),
   }
 });
 export default connect(mapStateToProps, mapDispatchToProps)(ParentBuildQuestionComponent);

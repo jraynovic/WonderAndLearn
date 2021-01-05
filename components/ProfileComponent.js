@@ -10,6 +10,7 @@ import {
   Keyboard,
   ActivityIndicator,
   Modal,
+  Dimensions
 } from "react-native";
 import { signUp, logIn, setSelectedKid } from "../redux/ActionCreators";
 import { connect } from "react-redux";
@@ -19,6 +20,7 @@ import cat from "../assets/Cat.png";
 import dinosaur from "../assets/Dinosaur.png";
 import dog from "../assets/Dog.png";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { percentToSize, widthPercentToSize } from "../shared/sizeUtils";
 
 const mapDispatchToProps = {
   signUp: (user) => signUp(user),
@@ -74,13 +76,13 @@ class ProfileComponent extends Component {
   };
   RenderImage = (image) => {
     if (image === "../assets/rainbowHills.png") {
-      return <Image style={styles.image} source={rainbow} />;
+      return <View style={styles.imageView}><Image resizeMode='contain' style={styles.image} source={rainbow} /></View>;
     } else if (image === "../assets/Cat.png") {
-      return <Image style={styles.image} source={cat} />;
+      return <View style={styles.imageView}><Image resizeMode='contain' style={styles.image} source={cat} /></View>;
     } else if (image === "../assets/Dinosaur.png") {
-      return <Image style={styles.image} source={dinosaur} />;
+      return <View style={styles.imageView}><Image resizeMode='contain' style={styles.image} source={dinosaur} /></View>;
     } else if (image === "../assets/Dog.png") {
-      return <Image style={styles.image} source={dog} />;
+      return <View style={styles.imageView}><Image resizeMode='contain' style={styles.image} source={dog} /></View>;
     }
   };
 
@@ -135,7 +137,7 @@ class ProfileComponent extends Component {
             >{`USE THE \nFOR PARENTS \nBUTTON TO \nADD AND \nMANAGE KIDS `}</Text>
           </View>
         )}
-        <View style={styles.centered}>
+        <View style={styles.forParentsView}>
           <TouchableOpacity
             style={styles.forParentsButton}
             onPress={() => this.setModalVisible(!this.state.modalVisible)}
@@ -241,15 +243,20 @@ class ProfileComponent extends Component {
     );
   }
 }
+
+const windowSize = Dimensions.get("window");
 const styles = StyleSheet.create({
   main: {
     backgroundColor: "#f6d55c",
-    flex: 1,
-    justifyContent: "flex-start",
+    height: "100%",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "flex-end",
   },
   loading: {
     backgroundColor: "#f6d55c",
-    flex: 1,
+    height: "100%",
+    width: "100%",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -261,60 +268,60 @@ const styles = StyleSheet.create({
     fontFamily: "Dosis",
     color: "#ed553b",
     marginTop: "20%",
-    marginBottom: 60,
-    fontSize: 40,
+    marginBottom: '10%',
+    fontSize: percentToSize(windowSize, 6),
   },
   noKids: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    marginTop: 0,
-    marginBottom: 150,
-    fontSize: 40,
+    marginBottom: percentToSize(windowSize, 35),//150,
+    fontSize: percentToSize(windowSize, 6),
     textAlign: "center",
   },
   kidText: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    marginTop: 10,
-    fontSize: 24,
+    marginTop: percentToSize(windowSize, 2),
+    fontSize: percentToSize(windowSize, 3.5),
   },
   kidsProfile: {
-    marginHorizontal: 10,
+    marginHorizontal: percentToSize(windowSize, .5),
   },
   fields: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    fontSize: 40,
+    fontSize: percentToSize(windowSize, 6),
     textAlign: "center",
   },
   errMessage: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    fontSize: 24,
+    fontSize: percentToSize(windowSize, 4)
   },
   image: {
-    height: 112,
-    width: 95,
-    marginLeft: 10,
+    height: percentToSize(windowSize, 20),
+    width: percentToSize(windowSize, 20),
+  },
+  imageView: {
+    height: percentToSize(windowSize, 20),
+    width: percentToSize(windowSize, 20),
+    marginLeft: percentToSize(windowSize, 1),
   },
   modalTitle: {
-    marginTop: 30,
-    fontSize: 20,
+    marginTop: percentToSize(windowSize, 3),
+    fontSize: percentToSize(windowSize, 3),
   },
   pinContainer: {
     flexDirection: "row",
-    marginTop: 20,
-    marginBottom: 75,
+    marginTop: percentToSize(windowSize, 3),
+    marginBottom: percentToSize(windowSize, 8),
   },
   pinBox: {
-    margin: 5,
-    height: 50,
-    width: 50,
+    margin: percentToSize(windowSize, 1),
+    height: percentToSize(windowSize, 7.5),
+    width: percentToSize(windowSize, 7.5),
     borderColor: "black",
-    borderWidth: 2,
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-start",
+    borderWidth: percentToSize(windowSize, .3),
   },
   profiles: {
     flex: 1,
@@ -322,13 +329,17 @@ const styles = StyleSheet.create({
     alignContent: "flex-start",
     justifyContent: "flex-start",
   },
+  forParentsView:{
+    position: "absolute",
+    bottom: 0,
+  },
   forParentsButton: {
-    width: 175,
-    marginBottom: 25,
+    width: percentToSize(windowSize, 30),
+    marginBottom: percentToSize(windowSize, 5),
     backgroundColor: "#ed553b",
     color: "#fff",
     borderRadius: 50,
-    padding: 5,
+    padding: percentToSize(windowSize, 1),
     shadowOffset: { width: -5, height: 5 },
     shadowColor: "black",
     shadowOpacity: 0.5,
@@ -337,18 +348,18 @@ const styles = StyleSheet.create({
   forParentsButtonText: {
     fontFamily: "Dosis",
     color: "#fff",
-    fontSize: 16,
+    fontSize: percentToSize(windowSize,2.4),
   },
   modalX: {
-    fontSize: 40,
+    fontSize: percentToSize(windowSize, 6),
     alignSelf: "flex-end",
-    marginBottom: 10,
+    marginBottom: percentToSize(windowSize, 2),
   },
   modalView: {
-    margin: 30,
+    margin:percentToSize(windowSize, 4),
     backgroundColor: "#fff",
     borderRadius: 20,
-    padding: 35,
+    padding: percentToSize(windowSize, 4),
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {

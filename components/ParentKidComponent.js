@@ -12,6 +12,7 @@ import {
   FlatList,
   ActivityIndicator,
   Modal,
+  Dimensions,
 } from "react-native";
 import { addNewKid, removeKid } from "../redux/ActionCreators";
 import { connect } from "react-redux";
@@ -23,6 +24,7 @@ import cat from "../assets/Cat.png";
 import dinosaur from "../assets/Dinosaur.png";
 import dog from "../assets/Dog.png";
 import RingProgress from "./RingProgressComponent";
+import { percentToSize, widthPercentToSize } from "../shared/sizeUtils";
 
 const mapDispatchToProps = {
   signUp: (user) => signUp(user),
@@ -53,7 +55,6 @@ class ParentKidComponent extends Component {
 
   customFonts = {
     Dosis: require("../assets/fonts/Dosis-Bold.ttf"),
-    //'Inter-Black': require('./assets/fonts/Inter-Black.otf'),
   };
 
   async _loadFontsAsync() {
@@ -64,22 +65,6 @@ class ParentKidComponent extends Component {
   componentDidMount() {
     this._loadFontsAsync();
     this.setState({ modalVisible: false });
-
-    // alert(this.props.user.parent.kids.filter(kid=> kid._id === this.props.user.selectedKid._id)[0].categories)
-
-    //  const total = this.props.user.parent.kids.filter(kid=> kid._id === this.props.user.selectedKid._id)[0].categories.reduce((value, accumulator)=>{
-    //         value.length+accumulator
-    //     })
-    //     this.setState({totalQuestions:total})
-
-    // if(this.props.user.parent.kids){
-    //     this.props.user.parent.kids.filter(kid=> kid._id === this.props.user.selectedKid._id)[0].categories
-    //     .map(category=>{
-    //         const questionLength= category.questions.length
-    //         alert(category.questions.length)
-    //         this.setState({totalQuestions:this.state.totalQuestions+ questionLength})
-    //         })
-    // }
   }
 
   setModalVisible = (visible) => {
@@ -88,13 +73,17 @@ class ParentKidComponent extends Component {
 
   RenderImage = (image) => {
     if (image === "../assets/rainbowHills.png") {
-      return <Image style={styles.image} source={rainbow} />;
+      return (
+        <Image resizeMode="contain" style={styles.image} source={rainbow} />
+      );
     } else if (image === "../assets/Cat.png") {
-      return <Image style={styles.image} source={cat} />;
+      return <Image resizeMode="contain" style={styles.image} source={cat} />;
     } else if (image === "../assets/Dinosaur.png") {
-      return <Image style={styles.image} source={dinosaur} />;
+      return (
+        <Image resizeMode="contain" style={styles.image} source={dinosaur} />
+      );
     } else if (image === "../assets/Dog.png") {
-      return <Image style={styles.image} source={dog} />;
+      return <Image resizeMode="contain" style={styles.image} source={dog} />;
     }
   };
 
@@ -120,19 +109,17 @@ class ParentKidComponent extends Component {
         ).length;
         const totalQuestions = category.questions.length;
         const percentComplete = ` ${(totalAnswered / totalQuestions) * 100}%`;
-        // this.setState({totalQuestions:this.state.totalQuestions+totalQuestions})
         return (
           <TouchableOpacity
             key={category.name}
-            onPress={() => alert(JSON.stringify(category.questions))}
           >
-            <View style={styles.challengeContainer}>
+            <View>
               <Text style={styles.challengeText}>{category.name}</Text>
               <View
                 style={{
                   backgroundColor: "#f5dc82",
                   width: "auto",
-                  height: 20,
+                  height: percentToSize(windowSize, 3),
                   borderRadius: 50,
                 }}
               >
@@ -140,7 +127,7 @@ class ParentKidComponent extends Component {
                   style={{
                     backgroundColor: "#ed553b",
                     width: percentComplete,
-                    height: 20,
+                    height: percentToSize(windowSize, 3), //20,
                     borderRadius: 50,
                   }}
                 ></View>
@@ -206,21 +193,29 @@ class ParentKidComponent extends Component {
     return (
       <View style={styles.main}>
         <View style={styles.centered}>
-          {this.RenderImage(this.props.user.selectedKid.image)}
-          <Text style={styles.title}>{this.props.kid.name}</Text>
-        </View>
-        <View style={styles.titleRow}>
-          <View style={styles.button}>
-            <TouchableOpacity onPress={() => alert(this.state.totalPoints)}>
-              <Text style={styles.buttonText}>PROGRESS</Text>
-            </TouchableOpacity>
+          <View>{this.RenderImage(this.props.user.selectedKid.image)}</View>
+          <View>
+            <Text style={styles.title}>{this.props.kid.name}</Text>
           </View>
-          <Text style={styles.text}>CHALLENGES</Text>
         </View>
-        <View style={styles.row}>
+
+        <View style={styles.titleRow}>
+          <View style={styles.titleColumn}>
+            <View style={styles.button}>
+              <TouchableOpacity onPress={() => alert(this.state.totalPoints)}>
+                <Text style={styles.buttonText}>PROGRESS</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.titleColumn}>
+            <Text style={styles.text}>CHALLENGES</Text>
+          </View>
+        </View>
+
+        <View style={styles.pointsRow}>
           <View style={styles.column}>
-            {/* <View style={styles.button} ><Text style={styles.buttonText}>PROGRESS</Text></View> */}
             <RingProgress
+              style={styles.progressRing}
               text={`${this.state.totalPoints}/${this.state.totalQuestions} \nPOINTS`}
               textFontSize={14}
               textFontColor="#ed553b"
@@ -228,16 +223,17 @@ class ParentKidComponent extends Component {
               percent={this.calculatePercent()}
               ringColor="#ed553b"
               ringBgColor="#f5d047"
-              radius={65}
+              radius={percentToSize( Dimensions.get("window"),8)}
             />
-            <View style={styles.button}>
+            {/* <View style={styles.button}>
               <TouchableOpacity
                 onPress={() => this.setModalVisible(!this.state.modalVisible)}
               >
                 <Text style={styles.buttonText}>DELETE PROFILE</Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
           </View>
+
           <View style={styles.challengeColumn}>
             <View style={styles.centered}>
               <View style={styles.challengeScrollView}>
@@ -248,7 +244,29 @@ class ParentKidComponent extends Component {
                   {this.renderChallenges()}
                 </ScrollView>
               </View>
+              {/* <TouchableOpacity
+                style={styles.button}
+                onPress={() => this.props.navigate()}
+              >
+                <Text style={styles.buttonText}>+CHALLENGES</Text>
+              </TouchableOpacity> */}
+            </View>
+          </View>
+          
+          
+        </View>
+        <View style={styles.bottomRow}>
+            <View style={styles.titleColumn}>
+            <View style={styles.button}>
               <TouchableOpacity
+                onPress={() => this.setModalVisible(!this.state.modalVisible)}
+              >
+                <Text style={styles.buttonText}>DELETE PROFILE</Text>
+              </TouchableOpacity>
+            </View>
+            </View>
+            <View style={styles.titleColumn}>
+            <TouchableOpacity
                 style={styles.button}
                 onPress={() => this.props.navigate()}
               >
@@ -256,7 +274,6 @@ class ParentKidComponent extends Component {
               </TouchableOpacity>
             </View>
           </View>
-        </View>
         <View>
           <Modal
             animationType="slide"
@@ -311,128 +328,141 @@ class ParentKidComponent extends Component {
     );
   }
 }
+
+const windowSize = Dimensions.get("window");
 const styles = StyleSheet.create({
   main: {
     backgroundColor: "#f6d55c",
-    flex: 1,
+    height: "100%",
+    width: "100%",
     justifyContent: "flex-start",
+    alignItems: "center",
   },
   loading: {
     backgroundColor: "#f6d55c",
-    flex: 1,
+    height: "100%",
+    width: "100%",
     alignItems: "center",
     justifyContent: "center",
   },
   centered: {
     alignItems: "center",
     justifyContent: "center",
+    textAlign: "center",
   },
   title: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    fontSize: 24,
+    fontSize: percentToSize(windowSize, 4), //24,
   },
   text: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    fontSize: 20,
-  },
-  container: {
-    flex: 1,
-    justifyContent: "center",
+    fontSize: percentToSize(windowSize, 3), //20,
   },
   row: {
     flexDirection: "row",
+    width: "100%",
+    // justifyContent: "center",
+    // alignContent: "center",
+  },
+  progressRing:{
+  },
+  pointsRow:{
+    flexDirection:'row',
+    width:'100%',
+    height:'15%'
+  },
+  bottomRow:{
+    flexDirection:'row',
+    width:'100%',
+    marginTop:percentToSize(windowSize, 3)
   },
   titleRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    width: "100%",
+    justifyContent: "space-around",
     alignItems: "center",
-    marginHorizontal: 20,
+    marginHorizontal: percentToSize(windowSize, 3), //20,
+  },
+  titleColumn: {
+    width: "50%",
+    alignItems: "center",
   },
   column: {
-    marginRight: 70,
+    textAlign: "center",
+    width: "50%",
     alignItems: "center",
+    justifyContent:'center'
   },
   challengeColumn: {
-    marginTop: 0,
-    marginRight: 10,
+    width: "50%",
+    alignItems: "center",
   },
   challengeScrollView: {
-    height: "45.5%",
-  },
-  challengeContainer: {
-    fontFamily: "Dosis",
-    color: "#ed553b",
-    fontSize: 18,
-    flex: 1,
-    justifyContent: "flex-start",
-    marginVertical: 5,
+    height: '100%',//"45.5%",
+    justifyContent: "center",
   },
   challengeText: {
+    textAlign: "center",
     fontFamily: "Dosis",
     color: "#ed553b",
-    fontSize: 18,
+    fontSize: percentToSize(windowSize, 2.5), //18,
+    marginTop: percentToSize(windowSize, 0.5),
   },
   challengeSubText: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    fontSize: 12,
+    fontSize: percentToSize(windowSize, 2), //12,
   },
   noUser: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    fontSize: 24,
+    fontSize: percentToSize(windowSize, 5), //24,
   },
   noUserContainer: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    fontSize: 24,
-    marginTop: 150,
+    marginTop: percentToSize(windowSize, 20), //150,
+  },
+  imageContainer: {
+    height: percentToSize(windowSize, 20),
+    width: percentToSize(windowSize, 20),
   },
   image: {
-    height: 140,
-    width: 120,
+    height: percentToSize(windowSize, 20),
+    width: percentToSize(windowSize, 20),
     marginLeft: 10,
-    opacity: 1,
-  },
-  fadedImage: {
-    height: 112,
-    width: 95,
-    marginLeft: 10,
-    opacity: 0.3,
   },
   modalX: {
-    fontSize: 40,
+    fontSize: percentToSize(windowSize, 6),
     alignSelf: "flex-end",
-    marginBottom: 10,
+    marginBottom: percentToSize(windowSize, 2.5),
   },
   modalButtons: {
     flexDirection: "row",
-    flex: 1,
   },
   button: {
     backgroundColor: "#ed553b",
     color: "#fff",
     borderRadius: 50,
-    padding: 5,
+    padding: percentToSize(windowSize, 1),
     alignItems: "center",
-    marginHorizontal: 10,
-    marginVertical: 10,
+    margin: percentToSize(windowSize, 1.5),
   },
   buttonText: {
     fontFamily: "Dosis",
     color: "#fff",
-    fontSize: 16,
-    paddingHorizontal: 10,
+    fontSize: percentToSize(windowSize, 2.3),
+    paddingHorizontal: percentToSize(windowSize, 1.5),
   },
   modalView: {
-    marginHorizontal: 30,
-    marginTop: 140,
+    marginHorizontal: percentToSize(windowSize, 5),
+    marginTop: percentToSize(windowSize, 15),
     backgroundColor: "#fff",
     borderRadius: 20,
-    paddingHorizontal: 35,
-    paddingBottom: 10,
+    paddingHorizontal: percentToSize(windowSize, 5),
+    paddingBottom: percentToSize(windowSize, 1),
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {

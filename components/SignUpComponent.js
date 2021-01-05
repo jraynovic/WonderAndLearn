@@ -7,11 +7,13 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
+  Dimensions,
 } from "react-native";
 import { signUp } from "../redux/ActionCreators";
 import { connect } from "react-redux";
 import * as Font from "expo-font";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { percentToSize, widthPercentToSize } from "../shared/sizeUtils";
 
 const mapDispatchToProps = {
   signUp: (user) => signUp(user),
@@ -164,7 +166,7 @@ class SignUpComponent extends Component {
     }
 
     return (
-      <ScrollView>
+      <ScrollView style={styles.mainScrollView}>
         <KeyboardAwareScrollView
           style={styles.main}
           style={{ backgroundColor: "#f6d55c" }}
@@ -315,66 +317,80 @@ class SignUpComponent extends Component {
                   : ""}
               </Text>
             </View>
-            <TouchableOpacity onPress={() => this.props.navigation.navigate("LogIn")}>
-              <Text style={styles.footer}>ALREADY HAVE AN ACCOUNT?</Text>
-            </TouchableOpacity>
           </View>
+          <View>
+              <TouchableOpacity 
+                onPress={() => this.props.navigation.navigate("LogIn")}
+              >
+                <Text style={styles.footer}>ALREADY HAVE AN ACCOUNT?</Text>
+              </TouchableOpacity>
+            </View>
         </KeyboardAwareScrollView>
       </ScrollView>
     );
   }
 }
+
+const windowSize = Dimensions.get("window");
 const styles = StyleSheet.create({
+  mainScrollView: {
+    height: "100%",
+    backgroundColor: "#f6d55c",
+  },
   main: {
     backgroundColor: "#f6d55c",
-    flex: 1,
+    height: "100%",
+    width: "100%",
     alignItems: "center",
     justifyContent: "flex-end",
   },
   loading: {
     backgroundColor: "#f6d55c",
-    flex: 1,
+    height: "100%",
+    width: "100%",
     alignItems: "center",
     justifyContent: "center",
   },
   title: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    marginTop: "20%",
-    fontSize: 40,
+    marginTop: "10%",
+    marginBottom: "10%",
+    fontSize: percentToSize(windowSize, 6),
   },
   fieldBackground: {
-    marginTop: 15,
+    marginTop: "4%",
     backgroundColor: "rgba(255, 255, 255, 0.51)",
     opacity: 1,
-    borderWidth: 1,
+    width:percentToSize(windowSize, 35),
+    borderWidth: percentToSize(windowSize, 0.15),
     borderColor: "rgba(255, 255, 255, 0.51)",
     borderRadius: 50,
     color: "red",
   },
   fieldBackgroundError: {
-    marginTop: 15,
+    marginTop: "4%",
     backgroundColor: "rgba(255, 255, 255, 0.51)",
     opacity: 1,
-    borderWidth: 1,
+    borderWidth: percentToSize(windowSize, 0.15),
     borderColor: "#ed553b",
     borderRadius: 50,
     color: "red",
   },
   fields: {
-    padding: 5,
+    padding: percentToSize(windowSize, 0.6),
     opacity: 1,
     fontFamily: "Dosis",
     color: "#ed553b",
-    fontSize: 16,
-    marginLeft: 10,
+    fontSize: percentToSize(windowSize, 2.4),
+    marginLeft: "5%",
   },
   createButton: {
-    marginTop: 30,
+    marginTop: "8%",
     backgroundColor: "#ed553b",
     color: "#fff",
     borderRadius: 50,
-    padding: 5,
+    padding: percentToSize(windowSize, 0.8),
     shadowOffset: { width: -5, height: 5 },
     shadowColor: "black",
     shadowOpacity: 0.5,
@@ -383,13 +399,12 @@ const styles = StyleSheet.create({
   createButtonText: {
     fontFamily: "Dosis",
     color: "#fff",
-    fontSize: 16,
+    fontSize: percentToSize(windowSize, 2.4),
   },
   errorText: {
-    // marginTop:15,
     fontFamily: "Dosis",
     color: "#ed553b",
-    fontSize: 10,
+    fontSize: percentToSize(windowSize, 1.6),
   },
   errorView: {
     alignSelf: "center",
@@ -398,10 +413,8 @@ const styles = StyleSheet.create({
   footer: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    fontSize: 16,
-    marginTop: 140,
-    paddingBottom: 10,
-    marginLeft: 8,
+    fontSize: percentToSize(windowSize,2.4), 
+    marginTop:'25%'
   },
 });
 export default connect(mapStateToProps, mapDispatchToProps)(SignUpComponent);

@@ -8,11 +8,13 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   ActivityIndicator,
+  Dimensions
 } from "react-native";
 import { editQuestionKid } from "../redux/ActionCreators";
 import { connect } from "react-redux";
 import * as Font from "expo-font";
 import { Icon } from "react-native-elements";
+import { percentToSize, widthPercentToSize } from "../shared/sizeUtils";
 
 const mapDispatchToProps = {
   editQuestionKid: (user, kidId, challengeId, questionId, question) =>
@@ -101,15 +103,15 @@ class ParentEditQuestionComponent extends Component {
     return (
       <View style={styles.main}>
         {Platform.OS === "ios" ? (
-          <TouchableOpacity
-            style={{ marginTop: 15, alignSelf: "right" }}
-            onPress={() => this.props.navigation.goBack()}
-          >
-            <Icon name="chevron-left" size="50" color="#ed553b" />
-          </TouchableOpacity>
-        ) : (
-          <View style={{ marginTop: 30 }} />
-        )}
+            <TouchableOpacity
+              style={styles.iosNavIcon}
+              onPress={() => this.props.navigation.goBack()}
+            >
+              <Icon name="chevron-left" size='50' color="#ed553b" />
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.notIOS} />
+          )}
         <ScrollView>
           <Text style={styles.title}>
             {this.props.navigation.state.params.category}
@@ -195,36 +197,37 @@ class ParentEditQuestionComponent extends Component {
   }
 }
 
+const windowSize = Dimensions.get("window");
 const styles = StyleSheet.create({
   main: {
     backgroundColor: "#f6d55c",
-    flex: 1,
-
+    height: "100%",
+    width: "100%",
     justifyContent: "flex-start",
   },
   loading: {
     backgroundColor: "#f6d55c",
-    flex: 1,
+    height: "100%",
+    width: "100%",
     alignItems: "center",
     justifyContent: "center",
   },
   title: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    marginTop: "5%",
-    marginBottom: 60,
-    fontSize: 40,
+    marginTop: "0%",
+    marginBottom:percentToSize(windowSize, 9), // 60,
+    fontSize: percentToSize(windowSize, 6),
     textAlign: "center",
   },
   textBoxTitle: {
-    justifyContent: "flex-start",
-    marginLeft: 50,
-    marginTop: 10,
+    marginLeft: widthPercentToSize(windowSize,15),
+    marginTop: percentToSize(windowSize, 2),
   },
   whiteText: {
     fontFamily: "Dosis",
     color: "#fff",
-    fontSize: 24,
+    fontSize: percentToSize(windowSize, 3.5)//24,
   },
   buttonRow: {
     flexDirection: "row",
@@ -232,40 +235,38 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   fieldBackground: {
-    width: "80%",
-    marginTop: 15,
+    width: widthPercentToSize(windowSize,68),
+    marginTop:  percentToSize(windowSize, 3),
     backgroundColor: "#ed553b",
     opacity: 1,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.51)",
     borderRadius: 50,
-    color: "red",
   },
   greenFieldBackground: {
-    width: "80%",
-    marginTop: 15,
+    width: widthPercentToSize(windowSize,68),
+    marginTop: percentToSize(windowSize, 3),
     backgroundColor: "green",
     opacity: 1,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.51)",
     borderRadius: 50,
-    color: "red",
   },
   fields: {
-    padding: 5,
+    padding: percentToSize(windowSize, .75),
     opacity: 1,
     fontFamily: "Dosis",
     color: "#fff",
-    fontSize: 16,
-    marginLeft: 10,
+    fontSize: percentToSize(windowSize, 2.5),//16,
+    marginLeft: percentToSize(windowSize, 2),
   },
   button: {
-    width: "25%",
-    marginTop: 40,
+    width: widthPercentToSize(windowSize,25),//"25%",
+    marginTop: percentToSize(windowSize, 6),
     backgroundColor: "#ed553b",
     color: "#fff",
     borderRadius: 50,
-    padding: 5,
+    padding: percentToSize(windowSize, .75),
     shadowOffset: { width: -5, height: 5 },
     shadowColor: "black",
     shadowOpacity: 0.5,
@@ -274,7 +275,14 @@ const styles = StyleSheet.create({
   buttonText: {
     fontFamily: "Dosis",
     color: "#fff",
-    fontSize: 16,
+    fontSize: percentToSize(windowSize, 2.5),
+  },
+  iosNavIcon: {
+    marginTop: percentToSize(windowSize, 2.5),
+    alignSelf: "flex-start",
+  },
+  notIOS:{
+    marginTop: percentToSize(windowSize, 2.5),
   }
 });
 export default connect(mapStateToProps, mapDispatchToProps)(ParentEditQuestionComponent);
