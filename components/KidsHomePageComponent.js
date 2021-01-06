@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Image,
   ActivityIndicator,
+  Dimensions
 } from "react-native";
 import { connect } from "react-redux";
 import * as Font from "expo-font";
@@ -14,6 +15,7 @@ import cat from "../assets/Cat.png";
 import dinosaur from "../assets/Dinosaur.png";
 import dog from "../assets/Dog.png";
 import KidsMenuComponent from "./KidsMenuComponent";
+import { percentToSize, widthPercentToSize } from "../shared/sizeUtils";
 
 
 const mapStateToProps = (state) => {
@@ -46,13 +48,13 @@ class KidsHomePageComponent extends Component {
 
   RenderImage = (image) => {
     if (image === "../assets/rainbowHills.png") {
-      return <Image style={styles.image} source={rainbow} />;
+      return <Image resizeMode='contain' style={styles.image} source={rainbow} />;
     } else if (image === "../assets/Cat.png") {
-      return <Image style={styles.image} source={cat} />;
+      return <Image resizeMode='contain' style={styles.image} source={cat} />;
     } else if (image === "../assets/Dinosaur.png") {
-      return <Image style={styles.image} source={dinosaur} />;
+      return <Image resizeMode='contain' style={styles.image} source={dinosaur} />;
     } else if (image === "../assets/Dog.png") {
-      return <Image style={styles.image} source={dog} />;
+      return <Image resizeMode='contain' style={styles.image} source={dog} />;
     }
   };
 
@@ -71,8 +73,10 @@ class KidsHomePageComponent extends Component {
     return (
       <View style={styles.main}>
         <Text style={styles.title}>WONDER + LEARN</Text>
-
-        {this.RenderImage(this.props.user.selectedKid.image)}
+        <View style={styles.imageView}>
+          {this.RenderImage(this.props.user.selectedKid.image)}
+        </View>
+        
         <Text style={styles.userName}>{this.props.user.selectedKid.name}</Text>
         <View>
           <TouchableOpacity
@@ -119,16 +123,19 @@ class KidsHomePageComponent extends Component {
   }
 }
 
+const windowSize = Dimensions.get("window");
 const styles = StyleSheet.create({
   main: {
     backgroundColor: "#f6d55c",
-    flex: 1,
+    height: "100%",
+    width: "100%",
     alignItems: "center",
-    justifyContent: "flex-start",
+    //justifyContent: "center",
   },
   loading: {
     backgroundColor: "#f6d55c",
-    flex: 1,
+    height: "100%",
+    width: "100%",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -136,28 +143,28 @@ const styles = StyleSheet.create({
     fontFamily: "Dosis",
     color: "#ed553b",
     marginTop: "10%",
-    marginBottom: 40,
-    fontSize: 40,
+    marginBottom: percentToSize(windowSize, 6),
+    fontSize: percentToSize(windowSize, 6),
   },
   userName: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    marginBottom: 10,
-    fontSize: 40,
+    marginBottom: percentToSize(windowSize, 1),
+    fontSize: percentToSize(windowSize, 6),
   },
   button: {
-    width: 225,
-    marginTop: 20,
+    width: widthPercentToSize(windowSize, 60),//225,
+    marginTop: percentToSize(windowSize, 3),
     backgroundColor: "#ed553b",
     color: "#fff",
     borderRadius: 10,
-    padding: 5,
+    padding: percentToSize(windowSize, .75),
     alignItems: "center",
   },
   buttonText: {
     fontFamily: "Dosis",
     color: "#fff",
-    fontSize: 24,
+    fontSize: percentToSize(windowSize, 3.5)//24,
   },
   row: {
     flexDirection: "row",
@@ -171,9 +178,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   image: {
-    height: 186,
-    width: 160,
+    // height: 186,
+    // //width: 160,
+    height:percentToSize(windowSize, 25),
+    width:percentToSize(windowSize, 25),
     marginLeft: 10,
   },
+  imageView:{
+    height:percentToSize(windowSize, 25),
+    width:percentToSize(windowSize, 25)
+  }
 });
 export default connect(mapStateToProps)(KidsHomePageComponent);

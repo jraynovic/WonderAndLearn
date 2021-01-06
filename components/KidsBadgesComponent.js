@@ -7,12 +7,14 @@ import {
   ScrollView,
   Image,
   ActivityIndicator,
+  Dimensions,
 } from "react-native";
 import KidsMenuComponent from "./KidsMenuComponent";
 import MedalIcon from "../assets/MedalIcon.png";
 import Lock_Icon from "../assets/Lock_Icon.png";
 import { connect } from "react-redux";
 import * as Font from "expo-font";
+import { percentToSize, widthPercentToSize } from "../shared/sizeUtils";
 
 const mapStateToProps = (state) => {
   return {
@@ -65,6 +67,7 @@ class KidsBadgesComponent extends Component {
               }
             >
               <Image
+                resizeMode='contain'
                 style={
                   image === Lock_Icon ? styles.lockImage : styles.medalImage
                 }
@@ -92,7 +95,7 @@ class KidsBadgesComponent extends Component {
       <View style={styles.main}>
         <Text style={styles.title}>WONDER + LEARN</Text>
         <Text style={styles.subTitle}>BADGES EARNED</Text>
-        <ScrollView>{this.renderBadges()}</ScrollView>
+        <ScrollView><View style={styles.scrollContainer}>{this.renderBadges()}</View></ScrollView>
         <View style={styles.menu}>
           <KidsMenuComponent
             navProfile={() => this.props.navigation.navigate("Profile")}
@@ -106,16 +109,19 @@ class KidsBadgesComponent extends Component {
   }
 }
 
+const windowSize = Dimensions.get("window");
 const styles = StyleSheet.create({
   main: {
     backgroundColor: "#f6d55c",
-    flex: 1,
+    height: "100%",
+    width: "100%",
     alignItems: "center",
     justifyContent: "flex-start",
   },
   loading: {
     backgroundColor: "#f6d55c",
-    flex: 1,
+    height: "100%",
+    width: "100%",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -123,38 +129,45 @@ const styles = StyleSheet.create({
     fontFamily: "Dosis",
     color: "#ed553b",
     marginTop: "10%",
-    fontSize: 40,
+    fontSize: percentToSize(windowSize, 6),
   },
   subTitle: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    marginTop: 10,
-    marginBottom: 60,
-    fontSize: 24,
+    marginTop: percentToSize(windowSize, 1.75),
+    marginBottom: percentToSize(windowSize, 6),
+    fontSize: percentToSize(windowSize, 3.5),
   },
   menu: {
-    marginTop: 5,
+    marginTop: percentToSize(windowSize, .75),
     position: "absolute",
     bottom: 0,
     flexDirection: "row",
   },
+  scrollContainer:{
+    justifyContent:'center',
+    alignItems:'center',
+    flex:1
+  },
   badgeContainer: {
+    // width:'100%',
     flexWrap: "wrap",
     flexDirection: "row",
+    justifyContent:'space-between'
   },
   badge: {
     flexBasis: "33.3%",
-    marginTop: 23,
+    marginTop: percentToSize(windowSize, 3.5),
   },
   lockImage: {
-    height: 80,
-    width: 80,
-    marginLeft: 22,
+    height: percentToSize(windowSize, 12),//80,
+    width: percentToSize(windowSize, 12),//80,
+    marginLeft: percentToSize(windowSize, 3.5),
   },
   medalImage: {
-    height: 100,
-    width: 80,
-    marginLeft: 22,
+    height:percentToSize(windowSize, 12),// 100,
+    width: percentToSize(windowSize, 12),
+    marginLeft: percentToSize(windowSize, 3.5)//22,
   },
 });
 export default connect(mapStateToProps)(KidsBadgesComponent);

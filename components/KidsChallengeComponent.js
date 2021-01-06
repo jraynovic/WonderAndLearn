@@ -7,6 +7,7 @@ import {
   ScrollView,
   Image,
   ActivityIndicator,
+  Dimensions
 } from "react-native";
 import { connect } from "react-redux";
 import * as Font from "expo-font";
@@ -15,6 +16,7 @@ import HistoryIcon from "../assets/HistoryIcon.png";
 import MathIcon from "../assets/MathIcon.png";
 import ReadingIcon from "../assets/ReadingIcon.png";
 import ScienceIcon from "../assets/ScienceIcon.png";
+import { percentToSize, widthPercentToSize } from "../shared/sizeUtils";
 
 const mapStateToProps = (state) => {
   return {
@@ -46,13 +48,13 @@ class KidsChallengeComponent extends Component {
 
   RenderImage = (image) => {
     if (image === "../assets/HistoryIcon.png") {
-      return <Image style={styles.image} source={HistoryIcon} />;
+      return <Image resizeMode='contain' style={styles.image} source={HistoryIcon} />;
     } else if (image === "../assets/MathIcon.png") {
-      return <Image style={styles.image} source={MathIcon} />;
+      return <Image resizeMode='contain' style={styles.image} source={MathIcon} />;
     } else if (image === "../assets/ScienceIcon.png") {
-      return <Image style={styles.image} source={ScienceIcon} />;
+      return <Image resizeMode='contain' style={styles.image} source={ScienceIcon} />;
     } else if (image === "../assets/ReadingIcon.png") {
-      return <Image style={styles.image} source={ReadingIcon} />;
+      return <Image resizeMode='contain' style={styles.image} source={ReadingIcon} />;
     } else {
       return <View></View>;
     }
@@ -83,10 +85,10 @@ class KidsChallengeComponent extends Component {
               ) : (
                 <Text
                   style={styles.challengeSubText}
-                >{`${answered}/${questionTotal} \nQUESTIONS\nLEFT`}</Text>
+                >{`${answered}/${questionTotal} \nQUESTIONS LEFT`}</Text>
               )}
             </View>
-            <View>
+            <View style={styles.imageView}>
               {this.RenderImage(category.image)}
             </View>
           </View>
@@ -143,7 +145,7 @@ class KidsChallengeComponent extends Component {
                 <View>
                   <Text style={styles.categoryText}>{category.name}</Text>
                 </View>
-                <View>{this.RenderImage(category.image)}</View>
+                <View style={styles.imageView}>{this.RenderImage(category.image)}</View>
                 <View>
                   {answered === questionTotal ? (
                     <Text style={styles.challengeSubTextGreen}>COMPLETED</Text>
@@ -178,14 +180,14 @@ class KidsChallengeComponent extends Component {
                 <View>
                   <Text style={styles.categoryText}>{category.name}</Text>
                 </View>
-                <View>{this.RenderImage(category.image)}</View>
+                <View style={styles.imageView}>{this.RenderImage(category.image)}</View>
                 <View>
                   {answered === questionTotal ? (
                     <Text style={styles.challengeSubTextGreen}>COMPLETED</Text>
                   ) : (
                     <Text
                       style={styles.challengeSubText}
-                    >{`${answered}/${questionTotal} \nQUESTIONS\nLEFT`}</Text>
+                    >{`${answered}/${questionTotal} \nQUESTIONS LEFT`}</Text>
                   )}
                 </View>
               </View>
@@ -199,6 +201,7 @@ class KidsChallengeComponent extends Component {
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
         >
+          <View style={styles.lastAccessedView}>
           <TouchableOpacity
             style={styles.lastAccessed}
             onPress={() => {
@@ -225,8 +228,9 @@ class KidsChallengeComponent extends Component {
             </View>
           </TouchableOpacity>
           <View style={styles.categoryRow}>
-            <View>{renderColumnOne}</View>
-            <View>{renderColumnTwo}</View>
+            <View style={styles.firstColumn}>{renderColumnOne}</View>
+            <View style={styles.secondColumn}>{renderColumnTwo}</View>
+          </View>
           </View>
         </ScrollView>
       );
@@ -266,16 +270,18 @@ class KidsChallengeComponent extends Component {
   }
 }
 
+const windowSize = Dimensions.get("window");
 const styles = StyleSheet.create({
   main: {
     backgroundColor: "#f6d55c",
-    flex: 1,
-    alignItems: "center",
+    height: "100%",
+    width: "100%",
     justifyContent: "flex-start",
   },
   loading: {
     backgroundColor: "#f6d55c",
-    flex: 1,
+    width: "100%",
+    height: "100%",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -283,86 +289,99 @@ const styles = StyleSheet.create({
     fontFamily: "Dosis",
     color: "#ed553b",
     marginTop: "20%",
-    marginBottom: 60,
-    fontSize: 40,
+    marginBottom: percentToSize(windowSize, 9),
+    fontSize: percentToSize(windowSize, 6),
+    textAlign:'center'
+  },
+  lastAccessedView:{
+    justifyContent:'center',
+    alignContent:'center'
   },
   lastAccessed: {
     backgroundColor: "#fce9a2",
-    width: 275,
-    height: 105,
+    width: widthPercentToSize(windowSize,90),//275,
+    height: percentToSize(windowSize,20),//105,
     borderRadius: 15,
     flexDirection: "row",
-    marginLeft: 12,
+    marginLeft: widthPercentToSize(windowSize,5),//,
   },
   lastAccessedTitleView: {
     justifyContent: "center",
     alignContent: "center",
-    marginLeft: 30,
+    marginLeft: widthPercentToSize(windowSize,9),//,
     flex: 1,
   },
   center: {
     alignItems: "center",
   },
   lastAccessedImageView: {
-    flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    margin: 7,
-    marginRight: 30,
+    marginRight: widthPercentToSize(windowSize,6),////30,
   },
   challengeText: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    fontSize: 30,
+    fontSize:  percentToSize(windowSize,4),
   },
   challengeSubText: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    fontSize: 12,
+    fontSize:  percentToSize(windowSize,1.75),//12,
+    textAlign:'center',
+    alignContent:'flex-end'
+  },
+  imageView:{
+    height: percentToSize(windowSize,11),//60,
+    width: percentToSize(windowSize,11),//60,
   },
   image: {
-    height: 60,
-    width: 60,
+    height: percentToSize(windowSize,11),//60,
+    width: percentToSize(windowSize,11),//60,
     resizeMode: "contain",
     marginLeft: 0,
   },
   categoryRow: {
     flexDirection: "row",
-    height: 140,
-    margin: 7,
-    justifyContent: "center",
+  },
+  firstColumn: {
+    width:'50%',  //lastAcessed is 80%
+    alignItems:'flex-end'
+  },
+  secondColumn: {
+    width:'50%',
+    alignItems:'flex-start'
   },
   categoryView: {
+    width:'100%',
     flexDirection: "column",
     alignItems: "center",
   },
   categoryItem: {
     backgroundColor: "#fce9a2",
-    height: 140,
-    width: 130,
+    height:percentToSize(windowSize,24),// 140,
+    width: widthPercentToSize(windowSize,42),//130,
+    marginHorizontal:widthPercentToSize(windowSize,2),
+    marginTop:percentToSize(windowSize,2),
     borderRadius: 15,
     justifyContent: "center",
   },
   categoryText: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    fontSize: 24,
-    marginBottom: 5,
-  },
-  categorySubText: {
-    fontFamily: "Dosis",
-    color: "#ed553b",
-    fontSize: 14,
-    marginBottom: 2,
+    fontSize: percentToSize(windowSize,2.75),//24,
+    marginBottom: percentToSize(windowSize,.75),
+    textAlign:'center'
   },
   challengeSubTextGreen: {
     fontFamily: "Dosis",
     color: "#6fc269",
-    fontSize: 14,
-    marginBottom: 2,
+    fontSize: percentToSize(windowSize,2),
+    marginBottom: percentToSize(windowSize,.75),
+    
   },
   menu: {
-    marginTop: 5,
+    marginTop: percentToSize(windowSize,2),
     position: "absolute",
     bottom: 0,
     flexDirection: "row",

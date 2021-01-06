@@ -5,6 +5,7 @@ import {
   View,
   StyleSheet,
   ActivityIndicator,
+  Dimensions
 } from "react-native";
 import { connect } from "react-redux";
 import * as Font from "expo-font";
@@ -14,6 +15,7 @@ import {
   updateLastAccessed,
   setSelectedKid,
 } from "../redux/ActionCreators";
+import { percentToSize, widthPercentToSize } from "../shared/sizeUtils";
 
 const mapDispatchToProps = {
   editQuestionKid: (user, kidId, challengeId, questionId, question) =>
@@ -293,15 +295,18 @@ class QuestionComponent extends Component {
   }
 }
 
+const windowSize = Dimensions.get("window");
 const styles = StyleSheet.create({
   main: {
     backgroundColor: "#f6d55c",
-    flex: 1,
+    height: "100%",
+    width: "100%",
     alignItems: "center",
   },
   loading: {
     backgroundColor: "#f6d55c",
-    flex: 1,
+    height: "100%",
+    width: "100%",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -309,82 +314,74 @@ const styles = StyleSheet.create({
     fontFamily: "Dosis",
     color: "#ed553b",
     marginTop: "5%",
-    marginBottom: 10,
-    fontSize: 40,
+    marginBottom: percentToSize(windowSize, 1.75),//10,
+    fontSize: percentToSize(windowSize, 6),
   },
   categoryTitle: {
     fontFamily: "Dosis",
     color: "#fff",
-    marginBottom: 10,
-    fontSize: 40,
+    marginBottom: percentToSize(windowSize, 1.75),//10,
+    fontSize: percentToSize(windowSize, 6),
     textAlign: "center",
   },
   noQuestions: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    margin: 20,
+    margin: percentToSize(windowSize, 3),//20,
     marginTop: "40%",
-    marginBottom: 60,
-    fontSize: 40,
+    marginBottom: percentToSize(windowSize, 9),
+    fontSize: percentToSize(windowSize, 6),
   },
   question: {
     fontFamily: "Dosis",
     color: "#fff",
-    fontSize: 40,
+    fontSize: percentToSize(windowSize, 6),
     textAlign: "center",
-  },
-  fields: {
-    padding: 5,
-    opacity: 1,
-    fontFamily: "Dosis",
-    color: "#ed553b",
-    fontSize: 16,
-    marginLeft: 10,
   },
   answerView: {
     alignSelf: "center",
   },
   answerButton: {
-    width: 305,
-    marginTop: 15,
+    width: widthPercentToSize(windowSize,85),//305, 
+    marginTop: percentToSize(windowSize, 2.3),//15,
     color: "#fff",
     borderColor: "#2dbaaa",
     borderWidth: 2,
     borderRadius: 10,
-    padding: 5,
+    padding: percentToSize(windowSize, .75),
     alignItems: "center",
   },
   answerButtonCorrect: {
-    width: 305,
-    marginTop: 15,
+    width: widthPercentToSize(windowSize,85),
+    marginTop: percentToSize(windowSize, 2.3),
     backgroundColor: "green",
     color: "#fff",
     borderColor: "#2dbaaa",
     borderWidth: 2,
     borderRadius: 10,
-    padding: 5,
+    padding: percentToSize(windowSize, .75),
     alignItems: "center",
   },
   answerButtonWrong: {
-    width: 305,
-    marginTop: 15,
+    width: widthPercentToSize(windowSize,85),
+    marginTop: percentToSize(windowSize, 2.3),
     backgroundColor: "#ed553b",
     color: "#fff",
     borderColor: "#2dbaaa",
     borderWidth: 2,
     borderRadius: 10,
-    padding: 5,
+    padding: percentToSize(windowSize, .75),
     alignItems: "center",
   },
   answerText: {
     fontFamily: "Dosis",
     color: "#fff",
-    fontSize: 24,
+    fontSize: percentToSize(windowSize, 3.5),//24,
   },
   questionView: {
     backgroundColor: "#2dbaaa",
     height: "30%",
-    width: 330,
+    width: widthPercentToSize(windowSize,88),//330,
     justifyContent: "center",
     borderRadius: 20,
     shadowOffset: { width: 5, height: 5 },
@@ -393,31 +390,32 @@ const styles = StyleSheet.create({
   },
   qRemaining: {
     alignSelf: "center",
-    marginBottom: -15,
-    width: "100%",
+    justifyContent:'center',
+    marginBottom: percentToSize(windowSize, -2),//-15,
+    height:'6%',
     zIndex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: percentToSize(windowSize, 3),//20,
     backgroundColor: "#fff",
     borderRadius: 20,
   },
   qRemainingText: {
     textAlign: "center",
     fontFamily: "Dosis",
-    fontSize: 20,
+    fontSize: percentToSize(windowSize, 3),
   },
   questionMarkView: {
     alignSelf: "center",
-    marginTop: -13,
-    width: "100%",
+    height:'6%',
+    marginTop: percentToSize(windowSize, -2.5),
     zIndex: 1,
-    paddingHorizontal: 10,
+    paddingHorizontal: percentToSize(windowSize, 1.5),//10,
     backgroundColor: "#fff",
     borderRadius: 90,
   },
   questionMarkText: {
     textAlign: "center",
     fontFamily: "Dosis",
-    fontSize: 20,
+    fontSize: percentToSize(windowSize, 3),
   },
   menu: {
     position: "absolute",
