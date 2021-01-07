@@ -111,13 +111,13 @@ class KidsProgressComponent extends Component {
                 height === 0
                   ? {
                       height: height,
-                      width: 25,
+                      width: percentToSize(windowSize, 3.5),
                       backgroundColor: "#ed553b",
                       borderRadius: 50,
                     }
                   : {
-                      height: height + 20,
-                      width: 25,
+                      height: percentToSize(windowSize, 18/100*height),//height + 20,
+                      width: percentToSize(windowSize, 3.5),
                       backgroundColor: "#ed553b",
                       borderRadius: 50,
                     }
@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
     marginLeft: percentToSize(windowSize, 6),
   },
   pointsView: {
-    height: percentToSize(windowSize, 20),//200,
+    height: percentToSize(windowSize, 24),//200,
   },
   pointsScrollView: {
     width: "100%",
@@ -267,6 +267,7 @@ const styles = StyleSheet.create({
     fontFamily: "Dosis",
     color: "#ed553b",
     fontSize: percentToSize(windowSize, 1.8),//12,
+    textAlign:'center'
   },
   menu: {
     marginTop: percentToSize(windowSize, .75),
