@@ -5,6 +5,7 @@ import {
   View,
   StyleSheet,
   ActivityIndicator,
+  ScrollView,
   Dimensions
 } from "react-native";
 import { connect } from "react-redux";
@@ -278,7 +279,12 @@ class QuestionComponent extends Component {
         {this.state.questionIndex <
           this.props.navigation.state.params.category.questions.length &&
         this.state.questions.length > 0 ? (
-          this.RenderQuestions()
+          <View style={styles.scrollViewContainer}>
+            <ScrollView style={styles.scrollView}>
+              {this.RenderQuestions()}
+            </ScrollView>
+          </View>
+          
         ) : (
           <Text>FINISHED</Text>
         )}
@@ -332,6 +338,12 @@ const styles = StyleSheet.create({
     marginBottom: percentToSize(windowSize, 9),
     fontSize: percentToSize(windowSize, 6),
   },
+  scrollViewContainer:{
+    height:percentToSize(windowSize,90)
+  },
+  scrollView:{
+    height:percentToSize(windowSize,50)
+  },
   question: {
     fontFamily: "Dosis",
     color: "#fff",
@@ -380,7 +392,7 @@ const styles = StyleSheet.create({
   },
   questionView: {
     backgroundColor: "#2dbaaa",
-    height: "30%",
+    height:"45%",
     width: widthPercentToSize(windowSize,88),//330,
     justifyContent: "center",
     borderRadius: 20,

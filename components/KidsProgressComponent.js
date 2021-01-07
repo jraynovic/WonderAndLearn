@@ -6,6 +6,7 @@ import {
   Image,
   ScrollView,
   ActivityIndicator,
+  Dimensions
 } from "react-native";
 import KidsMenuComponent from "./KidsMenuComponent";
 import { connect } from "react-redux";
@@ -15,6 +16,7 @@ import HistoryIcon from "../assets/HistoryIcon.png";
 import MathIcon from "../assets/MathIcon.png";
 import ReadingIcon from "../assets/ReadingIcon.png";
 import ScienceIcon from "../assets/ScienceIcon.png";
+import { percentToSize, widthPercentToSize } from "../shared/sizeUtils";
 
 const mapStateToProps = (state) => {
   return {
@@ -49,7 +51,7 @@ class KidsProgressComponent extends Component {
       return (
         <View id={category._id} style={styles.progressCard}>
           <Text style={styles.cardTitle}>{category.name}</Text>
-          <View>{this.renderIcon(category.image)}</View>
+          <View style={styles.imageView}>{this.renderIcon(category.image)}</View>
           <View style={styles.progressRing}>
             <RingProgress
               text={`${parseInt(this.calculatePercent(category.questions))}%`}
@@ -70,13 +72,13 @@ class KidsProgressComponent extends Component {
 
   renderIcon = (image) => {
     if (image === "../assets/HistoryIcon.png") {
-      return <Image style={styles.image} source={HistoryIcon} />;
+      return <Image resizeMode='contain' style={styles.image} source={HistoryIcon} />;
     } else if (image === "../assets/MathIcon.png") {
-      return <Image style={styles.image} source={MathIcon} />;
+      return <Image resizeMode='contain' style={styles.image} source={MathIcon} />;
     } else if (image === "../assets/ScienceIcon.png") {
-      return <Image style={styles.image} source={ScienceIcon} />;
+      return <Image resizeMode='contain' style={styles.image} source={ScienceIcon} />;
     } else if (image === "../assets/ReadingIcon.png") {
-      return <Image style={styles.image} source={ReadingIcon} />;
+      return <Image resizeMode='contain' style={styles.image} source={ReadingIcon} />;
     } else {
       return <View></View>;
     }
@@ -102,7 +104,7 @@ class KidsProgressComponent extends Component {
       ).length;
       const totalQuestions = category.questions.length;
       return (
-        <View id={category._id}>
+        <View id={category._id} style={styles.pointBarView}>
           <View style={styles.pointBar}>
             <View
               style={
@@ -179,15 +181,18 @@ class KidsProgressComponent extends Component {
   }
 }
 
+const windowSize = Dimensions.get("window");
 const styles = StyleSheet.create({
   main: {
     backgroundColor: "#f6d55c",
-    flex: 1,
+    height: "100%",
+    width: "100%",
     justifyContent: "flex-start",
   },
   loading: {
     backgroundColor: "#f6d55c",
-    flex: 1,
+    height: "100%",
+    width: "100%",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -196,27 +201,27 @@ const styles = StyleSheet.create({
     fontFamily: "Dosis",
     color: "#ed553b",
     marginTop: "10%",
-    fontSize: 40,
+    fontSize: percentToSize(windowSize, 6),
   },
   subTitle: {
     textAlign: "center",
     fontFamily: "Dosis",
     color: "#ed553b",
-    marginBottom: 10,
-    marginTop: 10,
-    fontSize: 30,
+    marginBottom: percentToSize(windowSize, 2),
+    marginTop: percentToSize(windowSize, 2),
+    fontSize: percentToSize(windowSize, 3.5),
   },
   progressCards: {
-    marginLeft: 10,
+    marginLeft: percentToSize(windowSize, 1.75),
   },
   progressCardView: {
-    height: 210,
+    height: percentToSize(windowSize, 32),//210,
   },
   progressCard: {
     backgroundColor: "#fce9a2",
     height: "100%",
-    width: 150,
-    marginRight: 8,
+    width: widthPercentToSize(windowSize,40),//150,
+    marginRight: percentToSize(windowSize, 1),
     borderRadius: 15,
     alignItems: "center",
   },
@@ -224,46 +229,47 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: "Dosis",
     color: "#ed553b",
-    fontSize: 24,
-    marginTop: 5,
+    fontSize: percentToSize(windowSize, 3.5),//24,
+    marginTop: percentToSize(windowSize, 1),
   },
   image: {
-    marginTop: 5,
-    height: 55,
-    width: 45,
-    resizeMode: "contain",
+    marginTop: percentToSize(windowSize, .75),
+    height: percentToSize(windowSize, 10),//55,
   },
   progressRing: {
-    marginTop: 5,
+    marginTop: percentToSize(windowSize, .75),
   },
   points: {
-    height: 100,
+    
     flexDirection: "row",
-    marginLeft: 40,
+    marginLeft: percentToSize(windowSize, 6),
   },
   pointsView: {
-    flex: 1,
-    height: 200,
+    height: percentToSize(windowSize, 20),//200,
   },
   pointsScrollView: {
     width: "100%",
   },
+  pointBarView:{
+    alignItems:'center',
+    width: widthPercentToSize(windowSize,30),//100,
+    marginRight:percentToSize(windowSize, .5)
+  },
   pointBar: {
-    width: 25,
+    width: percentToSize(windowSize, 3.5),//25,
     backgroundColor: "#fce9a2",
-    height: 120,
+    height: percentToSize(windowSize, 18),//120,
     borderRadius: 50,
     justifyContent: "flex-end",
-    marginRight: 40,
+    //marginRight: percentToSize(windowSize, 12),
   },
   pointTitle: {
     fontFamily: "Dosis",
     color: "#ed553b",
-    fontSize: 12,
-    textAlign: "left",
+    fontSize: percentToSize(windowSize, 1.8),//12,
   },
   menu: {
-    marginTop: 5,
+    marginTop: percentToSize(windowSize, .75),
     position: "absolute",
     bottom: 0,
     flexDirection: "row",
